@@ -43,7 +43,7 @@ func Conn() string {
 		conn += ":27017"
 	}
 	// defaultly using "test" as the db instance
-	db := "test"
+	db := "lEyTj8hYrUIKgMfi"
 
 	if len(os.Getenv("MONGODB_INSTANCE_NAME")) > 0 {
 		db = os.Getenv("MONGODB_INSTANCE_NAME")
@@ -63,7 +63,7 @@ func RawMgoDB() *mgo.Collection {
 	session.SetMode(mgo.Monotonic, true)
 
 	// Collection People
-	c := session.DB("test").C("people")
+	c := session.DB("lEyTj8hYrUIKgMfi").C("people")
 	return c
 }
 
