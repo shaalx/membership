@@ -1,17 +1,16 @@
 package main
 
 import (
+	"github.com/shaalx/merbership/db"
 	"github.com/shaalx/merbership/dbu"
+	"github.com/shaalx/merbership/logu"
 	"github.com/shaalx/merbership/pkg3/httplib"
-	"labix.org/v2/mgo"
-	// "labix.org/v2/mgo/bson"
-	// "labix.org/v2/mgo/bson"
 	"log"
+	"time"
 )
 
 func main() {
-	// v2()
-	v3()
+	v4()
 }
 
 func vv1() interface{} {
@@ -35,13 +34,13 @@ func vv1() interface{} {
 	// req := httplib.Get("https://api.simplr.cn/0.1/timeline/get_discover_timeline.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9&user_ref=1&_per_page=1")
 
 	// req := httplib.Get("https://api.simplr.cn/0.1/user/online_status.json?uids=5563d800bd4b873a164155fd&identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9")
-	// req := httplib.Get("https://api.simplr.cn/0.1/discover/filter.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9&_per_page=2")
+	req := httplib.Get("https://api.simplr.cn/0.1/discover/filter.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9&_per_page=2")
 	// req := httplib.Get("https://api.simplr.cn/0.1/discover/filter.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9")
 	// req := httplib.Get("https://api.simplr.cn/0.1/discover/filter.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9&_per_page=240")
 	// req := httplib.Get("https://api.simplr.cn/0.1/discover/filter.json?departmentId=54fa0e13a341141ad9071261&identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9&gender=0&schoolId=54fa0e13a341141ad9071254&degree=1&_per_page=240&grade=2014")
 
 	// req := httplib.Get("https://api.simplr.cn/0.1/auth/refresh_token.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJoYXNoIjoiOTE5ZjEzZWQ5YjRhOWQ1NmIxN2Y4MDRhY2U0ODViOTQzMTA1ODQyOSIsImlkIjoiNTU2ZWMzYzRhMzQxMTQzNjExZjZkNDQwIn0.SF0vsWxH_h9jK0RNfkV51yK2jz4XP68zs9wRVu5nhqg")
-	req := httplib.Get("https://api.simplr.cn/0.1/public/top_schools.json")
+	// req := httplib.Get("https://api.simplr.cn/0.1/public/top_schools.json")
 	// req := httplib.Get("https://api.simplr.cn/0.1/public/school_departments.json?schoolId=55325319a341147b16db72b3")
 
 	req.Header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjgzOTlmMjJmNjg5MzUzNGQ3OGE5IiwidWlkIjoiNTUyNWY1YmRhMzQxMTQzYTRlNmE4OTk2IiwiZXhwIjoxNDM1OTAyMjExfQ.5LNYiRI6SiGbLsDmLbsPc4X6JrhyDh1X2_5kVFV4VMg")
@@ -53,39 +52,28 @@ func vv1() interface{} {
 	return v
 }
 
-func v2() {
-	session, err := mgo.Dial("127.0.0.1:27017")
-	defer session.Close()
-	if checkError(err) {
-		return
+var (
+	MgoDB = dbu.NewMgoDB("")
+)
+
+func v4() {
+	_url := "https://api.simplr.cn/0.1/discover/filter.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9"
+	ticker := time.NewTicker(time.Second * 10)
+	for {
+		bys := fetch(_url)
+		ok := db.PersistIUsers(MgoDB.GetCollection([]string{"nation", "users"}...), bys)
+		log.Println(ok)
+		<-ticker.C
 	}
-	session.SetMode(mgo.Monotonic, true)
-	collection := session.DB("test").C("coco")
-	err = collection.Insert(vv1())
-	checkError(err)
 }
 
-func checkError(err error) bool {
-	if nil != err {
-		log.Println(err)
-		return true
+func fetch(_url string) []byte {
+	req := httplib.Get(_url)
+	req.Header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjgzOTlmMjJmNjg5MzUzNGQ3OGE5IiwidWlkIjoiNTUyNWY1YmRhMzQxMTQzYTRlNmE4OTk2IiwiZXhwIjoxNDM1OTAyMjExfQ.5LNYiRI6SiGbLsDmLbsPc4X6JrhyDh1X2_5kVFV4VMg")
+	req.Header("Host", "api.simplr.cn")
+	bys, err := req.Bytes()
+	if logu.CheckErr(err) {
+		return nil
 	}
-	return false
+	return bys
 }
-
-func v3() {
-	db := dbu.NewMgoDB("")
-	any := db.GetCollection([]string{"test", "cool"}...).Select(nil)
-	b := dbu.Bson2Bytes(any)
-	log.Println(string(b))
-	log.Println((b))
-
-	jb := dbu.Bson2JBytes(any)
-	log.Println(string(jb))
-	log.Println((jb))
-	defer db.Close()
-}
-
-// func bson2bytes(m *bson.M) []byte {
-// m.
-// }

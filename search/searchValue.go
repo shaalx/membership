@@ -1,7 +1,8 @@
 package search
 
 import (
-	sjson "github.com/shaalx/sstruct/pkg3/go-simplejson"
+	"github.com/shaalx/merbership/logu"
+	sjson "github.com/shaalx/merbership/pkg3/go-simplejson"
 )
 
 // search value
@@ -11,11 +12,11 @@ func SearchSValue(data []byte, key string, path ...string) string {
 		return ""
 	}
 	js, err := sjson.NewJson(data)
-	if checkError(err) {
+	if logu.CheckErr(err) {
 		return ""
 	}
 	value, err := js.GetPath(path...).Get(key).String()
-	if checkError(err) {
+	if logu.CheckErr(err) {
 		return ""
 	}
 	return value
@@ -28,11 +29,11 @@ func SearchIValue(data []byte, key string, path ...string) int64 {
 		return -1
 	}
 	js, err := sjson.NewJson(data)
-	if checkError(err) {
+	if logu.CheckErr(err) {
 		return -1
 	}
 	value, err := js.GetPath(path...).Get(key).Int64()
-	if checkError(err) {
+	if logu.CheckErr(err) {
 		return -1
 	}
 	return value
@@ -45,11 +46,11 @@ func SearchBValue(data []byte, key string, path ...string) bool {
 		return false
 	}
 	js, err := sjson.NewJson(data)
-	if checkError(err) {
+	if logu.CheckErr(err) {
 		return false
 	}
 	value, err := js.GetPath(path...).Get(key).Bool()
-	if checkError(err) {
+	if logu.CheckErr(err) {
 		return false
 	}
 	return value
@@ -62,11 +63,11 @@ func SearchFIValue(data []byte, key string, path ...string) int64 {
 		return -1
 	}
 	js, err := sjson.NewJson(data)
-	if checkError(err) {
+	if logu.CheckErr(err) {
 		return -1
 	}
 	value, err := js.GetPath(path...).Get(key).Float64()
-	if checkError(err) {
+	if logu.CheckErr(err) {
 		return -1
 	}
 	return int64(value)

@@ -67,6 +67,17 @@ func (db *MgoDB) GetCollection(params ...string) *Collection {
 	return db.SetCollection(params...)
 }
 
+func (c *Collection) Count(selector bson.M) int {
+	if c == nil || c.c == nil {
+		return -1
+	}
+	n, err := c.c.Find(selector).Count()
+	if logu.CheckErr(err) {
+		return -1
+	}
+	return n
+}
+
 func (c *Collection) Select(selector bson.M) *bson.M {
 	if c == nil || c.c == nil {
 		return nil
@@ -79,13 +90,13 @@ func (c *Collection) Select(selector bson.M) *bson.M {
 	return &result
 }
 
-func (c *Collection) Insert(structs interface{}) bool {
+func (c *Collection) Insert(structs ...interface{}) int {
 	if c == nil || c.c == nil {
-		return false
+		return -1
 	}
-	err := c.c.Insert(structs)
+	err := c.c.Insert(structs...)
 	if logu.CheckErr(err) {
-		return false
+		return -1
 	}
-	return true
+	return len(structs)
 }

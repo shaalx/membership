@@ -1,7 +1,8 @@
 package search
 
 import (
-	sjson "github.com/shaalx/sstruct/pkg3/go-simplejson"
+	"github.com/shaalx/merbership/logu"
+	sjson "github.com/shaalx/merbership/pkg3/go-simplejson"
 )
 
 /*
@@ -12,12 +13,12 @@ func SearchArray(data []byte, key string, path ...string) []interface{} {
 		return nil
 	}
 	js, err := sjson.NewJson(data)
-	if checkError(err) {
+	if logu.CheckErr(err) {
 		return nil
 	}
 	js = js.GetPath(path...).Get(key)
 	ary, err := js.Array()
-	if checkError(err) {
+	if logu.CheckErr(err) {
 		return nil
 	}
 	return ary
@@ -31,11 +32,11 @@ func SearchArrays(data []byte, path ...string) []interface{} {
 		return nil
 	}
 	js, err := sjson.NewJson(data)
-	if checkError(err) {
+	if logu.CheckErr(err) {
 		return nil
 	}
 	ary, err := js.GetPath(path...).Array()
-	if checkError(err) {
+	if logu.CheckErr(err) {
 		return nil
 	}
 	return ary

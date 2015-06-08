@@ -61,3 +61,19 @@ func JsonStruct(structs interface{}, m *bson.M) bool {
 	}
 	return true
 }
+
+func I2BsonBytes(i interface{}) []byte {
+	b, err := bson.Marshal(i)
+	if logu.CheckErr(err) {
+		return nil
+	}
+	return b
+}
+
+func I2JsonBytes(i interface{}) []byte {
+	b, err := json.Marshal(i)
+	if logu.CheckErr(err) {
+		return nil
+	}
+	return b
+}
