@@ -69,13 +69,13 @@ func v4() {
 	_url := "https://api.simplr.cn/0.1/discover/filter.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9&_per_page=24"
 	for {
 		bys := fetch(_url)
-		n, uids := db.PersistIUsers(MgoDB.GetCollection([]string{"nation", "users"}...), bys)
+		n, uids := db.PersistIUsers(MgoDB.GetCollection([]string{"test", "users"}...), bys)
 		log.Println(n)
 
 		juids := strings.Join(uids, ",")
 		online_status_url := _url2 + juids
 		bys = fetch(online_status_url)
-		all, online_count := db.PersistIOnlineStatuses(MgoDB.GetCollection([]string{"nation", "online"}...), bys)
+		all, online_count := db.PersistIOnlineStatuses(MgoDB.GetCollection([]string{"test", "online"}...), bys)
 		log.Printf("%d / %d", online_count, all)
 		heart_bengbengbeng := u.Heart()
 		log.Printf(" %d sec later...", heart_bengbengbeng/1000000000)
