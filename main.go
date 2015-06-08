@@ -61,7 +61,8 @@ func vv1() interface{} {
 }
 
 var (
-	MgoDB = dbu.NewMgoDB(dbu.Conn())
+	// MgoDB = dbu.NewMgoDB(dbu.Conn())
+	peopleC = dbu.RawMgoDB()
 )
 
 func v4() {
@@ -69,7 +70,7 @@ func v4() {
 	_url := "https://api.simplr.cn/0.1/discover/filter.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9&_per_page=24"
 	for {
 		bys := fetch(_url)
-		n, uids := db.PersistIUsers(MgoDB.GetCollection([]string{"test", "people"}...), bys)
+		n, uids := db.RawPersistIUsers(peopleC, bys)
 		log.Println(n)
 
 		_ = uids

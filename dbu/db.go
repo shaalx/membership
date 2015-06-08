@@ -43,7 +43,7 @@ func Conn() string {
 		conn += ":27017"
 	}
 	// defaultly using "test" as the db instance
-	db := "nation"
+	db := "test"
 
 	if len(os.Getenv("MONGODB_INSTANCE_NAME")) > 0 {
 		db = os.Getenv("MONGODB_INSTANCE_NAME")
@@ -53,6 +53,18 @@ func Conn() string {
 	conn += "/" + db
 	fmt.Println(conn)
 	return conn
+}
+
+func RawMgoDB() *mgo.Collection {
+	session, err := mgo.Dial(Conn())
+	if err != nil {
+		panic(err)
+	}
+	session.SetMode(mgo.Monotonic, true)
+
+	// Collection People
+	c := session.DB("test").C("people")
+	return c
 }
 
 func NewMgoDB(dailStr string) *MgoDB {

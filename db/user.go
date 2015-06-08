@@ -3,8 +3,10 @@ package db
 import (
 	"fmt"
 	"github.com/shaalx/merbership/dbu"
+	"github.com/shaalx/merbership/logu"
 	// "github.com/shaalx/merbership/logu"
 	"github.com/shaalx/merbership/search"
+	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 	"log"
 	"strings"
@@ -83,6 +85,33 @@ func PersistIUsers(DB *dbu.Collection, data []byte) (int, []string) {
 		}
 	}
 	return Persist(DB, users...), uids
+}
+
+func RawPersistIUsers(DB *mgo.Collection, data []byte) (int, []string) {
+	iuser := searchIUsers(data)
+	users := make([]interface{}, 0, len(iuser))
+	uids := make([]string, 0, len(iuser))
+	for _, iu := range iuser {
+		bys := dbu.I2JsonBytes(iu)
+		if nil != bys {
+			uid := search.SearchSValue(bys, "id")
+			selector := bson.M{
+				"id": uid,
+			}
+			if n, err := DB.Find(selector).Count(); err == nil && n == 0 {
+				users = append(users, iu)
+				log.Printf("%s >>>>>>>>>>>>>>> {DB}", uid)
+			} else {
+				log.Printf("%s has existed.", uid)
+			}
+			uids = append(uids, uid)
+		}
+	}
+	err := DB.Insert(users...)
+	if logu.CheckErr(err) {
+		return -1, uids
+	}
+	return len(users), uids
 }
 
 func PersistIOnlineStatuses(DB *dbu.Collection, data []byte) (int, int) {
