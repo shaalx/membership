@@ -4,6 +4,7 @@ import (
 	"github.com/shaalx/merbership/logu"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
+	"os"
 	"sync"
 )
 
@@ -15,6 +16,40 @@ type MgoDB struct {
 
 type Collection struct {
 	c *mgo.Collection
+}
+
+func Conn() string {
+	conn := ""
+	if len(os.Getenv("MONGODB_USERNAME")) > 0 {
+		conn += os.Getenv("MONGODB_USERNAME")
+
+		if len(os.Getenv("MONGODB_PASSWORD")) > 0 {
+			conn += ":" + os.Getenv("MONGODB_PASSWORD")
+		}
+
+		conn += "@"
+	}
+
+	if len(os.Getenv("MONGODB_PORT_27017_TCP_ADDR")) > 0 {
+		conn += os.Getenv("MONGODB_PORT_27017_TCP_ADDR")
+	} else {
+		conn += "localhost"
+	}
+
+	if len(os.Getenv("MONGODB_PORT_27017_TCP_PORT")) > 0 {
+		conn += ":" + os.Getenv("MONGODB_PORT_27017_TCP_PORT")
+	} else {
+		conn += ":27017"
+	}
+	// defaultly using "test" as the db instance
+	db := "nation"
+
+	if len(os.Getenv("MONGODB_INSTANCE_NAME")) > 0 {
+		db = os.Getenv("MONGODB_INSTANCE_NAME")
+	}
+
+	conn += "/" + db
+	return conn
 }
 
 func NewMgoDB(dailStr string) *MgoDB {
@@ -93,6 +128,9 @@ func (c *Collection) Select(selector bson.M) *bson.M {
 func (c *Collection) Insert(structs ...interface{}) int {
 	if c == nil || c.c == nil {
 		return -1
+	}
+	if len(structs) == 0 {
+		return 0
 	}
 	err := c.c.Insert(structs...)
 	if logu.CheckErr(err) {

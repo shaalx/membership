@@ -54,7 +54,7 @@ func vv1() interface{} {
 }
 
 var (
-	MgoDB = dbu.NewMgoDB("")
+	MgoDB = dbu.NewMgoDB(dbu.Conn())
 )
 
 func v4() {
