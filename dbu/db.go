@@ -1,7 +1,6 @@
 package dbu
 
 import (
-	"encoding/json"
 	"github.com/shaalx/merbership/logu"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
@@ -80,34 +79,13 @@ func (c *Collection) Select(selector bson.M) *bson.M {
 	return &result
 }
 
-func Bson2Bytes(m *bson.M) []byte {
-	b, err := bson.Marshal(m)
-	if logu.CheckErr(err) {
-		return []byte{}
+func (c *Collection) Insert(structs interface{}) bool {
+	if c == nil || c.c == nil {
+		return false
 	}
-	return b
-}
-func Bytes2Bson(b []byte) *bson.M {
-	var ret bson.M
-	err := bson.Unmarshal(b, &ret)
+	err := c.c.Insert(structs)
 	if logu.CheckErr(err) {
-		return nil
+		return false
 	}
-	return &ret
-}
-
-func Bson2JBytes(m *bson.M) []byte {
-	b, err := json.Marshal(m)
-	if logu.CheckErr(err) {
-		return []byte{}
-	}
-	return b
-}
-func JBytes2Bson(b []byte) *bson.M {
-	var ret bson.M
-	err := json.Unmarshal(b, &ret)
-	if logu.CheckErr(err) {
-		return nil
-	}
-	return &ret
+	return true
 }
