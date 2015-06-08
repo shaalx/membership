@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/shaalx/merbership/db"
 	"github.com/shaalx/merbership/dbu"
 	"github.com/shaalx/merbership/logu"
@@ -10,6 +12,10 @@ import (
 	"strings"
 	"time"
 )
+
+func search(rw http.ResponseWriter, req *http.Request) {
+
+}
 
 func main() {
 	v4()

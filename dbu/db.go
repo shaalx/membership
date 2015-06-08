@@ -46,7 +46,7 @@ func Conn() string {
 	db := "nation"
 
 	if len(os.Getenv("MONGODB_INSTANCE_NAME")) > 0 {
-		db = os.Getenv("MONGODB_INSTANCE_NAME")
+		db = os.Getenv("MONGODB_INSTANCE_NATION")
 	}
 
 	conn += "/" + db
