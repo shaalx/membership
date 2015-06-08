@@ -6,5 +6,8 @@ WORKDIR /gopath/app
 ENV GOPATH /gopath/app
 ADD . /gopath/app/
 
+RUN go get github.com/shaalx/merbership
+RUN go install github.com/shaalx/merbership
+RUN ls
 EXPOSE 80
 CMD ["/gopath/app/bin/merbership"]
