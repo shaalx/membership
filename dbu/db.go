@@ -1,6 +1,7 @@
 package dbu
 
 import (
+	"fmt"
 	"github.com/shaalx/merbership/logu"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
@@ -49,6 +50,7 @@ func Conn() string {
 	}
 
 	conn += "/" + db
+	fmt.Println(conn)
 	return conn
 }
 
