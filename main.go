@@ -5,6 +5,7 @@ import (
 	"github.com/shaalx/merbership/dbu"
 	"github.com/shaalx/merbership/logu"
 	"github.com/shaalx/merbership/pkg3/httplib"
+	"github.com/shaalx/merbership/u"
 	"log"
 	"time"
 )
@@ -58,12 +59,13 @@ var (
 
 func v4() {
 	_url := "https://api.simplr.cn/0.1/discover/filter.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9"
-	ticker := time.NewTicker(time.Second * 10)
 	for {
 		bys := fetch(_url)
 		ok := db.PersistIUsers(MgoDB.GetCollection([]string{"nation", "users"}...), bys)
 		log.Println(ok)
-		<-ticker.C
+		heart_bengbengbeng := u.Heart()
+		log.Printf(" %d sec later...", heart_bengbengbeng/1000000000)
+		time.Sleep(heart_bengbengbeng)
 	}
 }
 
