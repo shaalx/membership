@@ -11,6 +11,6 @@ var (
 
 func Heart() time.Duration {
 	rander := rand.New(rand.NewSource(time.Now().Unix()))
-	n := float64(rander.Int63n(30)+10) * e9
+	n := float64(rander.Int63n(30)+20) * e9
 	return time.Duration(n)
 }
