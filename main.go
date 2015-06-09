@@ -1,24 +1,65 @@
 package main
 
 import (
+	"fmt"
+	// "bytes"
+	"labix.org/v2/mgo/bson"
 	"net/http"
 
 	"github.com/shaalx/merbership/db"
 	"github.com/shaalx/merbership/dbu"
 	"github.com/shaalx/merbership/logu"
 	"github.com/shaalx/merbership/pkg3/httplib"
-	"github.com/shaalx/merbership/u"
+	// "github.com/shaalx/merbership/u"
 	"log"
 	"strings"
-	"time"
+	// "time"
 )
 
-func search(rw http.ResponseWriter, req *http.Request) {
+func count(rw http.ResponseWriter, req *http.Request) {
+	n, err := peopleC.Count()
+	if logu.CheckErr(err) {
+		rw.Write([]byte(err.Error()))
+	}
+	rw.Write([]byte(fmt.Sprintf("Count : %d", n)))
+}
 
+func all(rw http.ResponseWriter, req *http.Request) {
+	var ret []interface{}
+	err := peopleC.Find(nil).All(&ret)
+	if logu.CheckErr(err) {
+		rw.Write([]byte(err.Error()))
+	}
+	rw.Write([]byte(fmt.Sprintf("all\n : %v", ret)))
+}
+
+func search(rw http.ResponseWriter, req *http.Request) {
+	fmt.Println(req.URL)
+	fmt.Println(req.RequestURI)
+	uid := req.URL.Query().Get("uid")
+	var ret interface{}
+	selector := bson.M{
+		"id": uid,
+	}
+	fmt.Println(selector)
+	err := peopleC.Find(selector).One(&ret)
+	if logu.CheckErr(err) {
+		rw.Write([]byte(err.Error()))
+	}
+	rw.Write([]byte(fmt.Sprintf("search : \n%v", ret)))
+}
+func do(rw http.ResponseWriter, req *http.Request) {
+	uids := v4()
+	rw.Write([]byte(fmt.Sprintf("%v", uids)))
 }
 
 func main() {
-	v4()
+	// go v4()
+	http.HandleFunc("/do", do)
+	http.HandleFunc("/", count)
+	http.HandleFunc("/all", all)
+	http.HandleFunc("/search", search)
+	http.ListenAndServe(":80", nil)
 }
 
 func vv1() interface{} {
@@ -65,24 +106,25 @@ var (
 	peopleC = dbu.RawMgoDB()
 )
 
-func v4() {
+func v4() []string {
 	_url2 := "https://api.simplr.cn/0.1/user/online_status.json?uids=" //557471f7a341140630d4d319%2C551473eda34114331d3bfaf5%2C55560f1da3411422e127ca91%2C5557411da341140b6f82663a%2C552cb566a34114109b2925e2%2C55138c1ca3411440863bfbda%2C5513c8f2a3411478a13bf3bf%2C55140832a34114196f3bf27b%2C5563d800bd4b873a164155fd%2C55142b6ca3411428603bf5a2%2C550db261a341143b0ae91507%2C5549f272a34114481e27cda9%2C5566bc63a3411429a9f6da87%2C555bca9ba3411411bd826212%2C555fdbe0bd4b8706478a1c67%2C555dc48dbd4b87204faa60ff%2C5552eeeca341143d6927c76c%2C550eea42a34114649df2a9cd%2C55195b21a341145a8415aa91%2C555d59dfa341143873826ee1%2C555332f8a341145c0e27c89d%2C5539daf9a3411434a96ab8a6%2C5552ceb5a3411431fa27bcc5%2C5518da59a341142d171598ab&identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9"
 	_url := "https://api.simplr.cn/0.1/discover/filter.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9&_per_page=24"
-	for {
-		bys := fetch(_url)
-		n, uids := db.RawPersistIUsers(peopleC, bys)
-		log.Println(n)
+	// for {
+	bys := fetch(_url)
+	n, uids := db.RawPersistIUsers(peopleC, bys)
+	log.Println(n)
 
-		_ = uids
-		juids := strings.Join(uids, ",")
-		online_status_url := _url2 + juids
-		bys = fetch(online_status_url)
-		// all, online_count := db.PersistIOnlineStatuses(MgoDB.GetCollection([]string{"test", "online"}...), bys)
-		// log.Printf("%d / %d", online_count, all)
-		heart_bengbengbeng := u.Heart()
-		log.Printf(" %d sec later...", heart_bengbengbeng/1000000000)
-		time.Sleep(heart_bengbengbeng)
-	}
+	_ = uids
+	juids := strings.Join(uids, ",")
+	online_status_url := _url2 + juids
+	bys = fetch(online_status_url)
+	// all, online_count := db.PersistIOnlineStatuses(MgoDB.GetCollection([]string{"test", "online"}...), bys)
+	// log.Printf("%d / %d", online_count, all)
+	// heart_bengbengbeng := u.Heart()
+	// log.Printf(" %d sec later...", heart_bengbengbeng/1000000000)
+	// time.Sleep(heart_bengbengbeng)
+	// }
+	return uids
 }
 
 func fetch(_url string) []byte {
