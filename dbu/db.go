@@ -63,7 +63,8 @@ func RawMgoDB() *mgo.Collection {
 	session.SetMode(mgo.Monotonic, true)
 
 	// Collection People
-	c := session.DB("lEyTj8hYrUIKgMfi").C("people")
+	// c := session.DB("lEyTj8hYrUIKgMfi").C("people")
+	c := session.DB("nation").C("users")
 	return c
 }
 
