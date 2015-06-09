@@ -43,7 +43,8 @@ func Conn() string {
 		conn += ":27017"
 	}
 	// defaultly using "test" as the db instance
-	db := "lEyTj8hYrUIKgMfi"
+	// db := "lEyTj8hYrUIKgMfi"
+	db := "nation"
 
 	if len(os.Getenv("MONGODB_INSTANCE_NAME")) > 0 {
 		db = os.Getenv("MONGODB_INSTANCE_NAME")
