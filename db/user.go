@@ -37,17 +37,17 @@ func Now() string {
 	// return nowp.String()
 }
 
-func searchIUsers(data []byte) []interface{} {
+func SearchIUsers(data []byte) []interface{} {
 	iusers := search.SearchArray(data, "users", []string{}...)
 	return iusers
 }
 
-func searchIOnlieStatuses(data []byte) []interface{} {
+func SearchIOnlieStatuses(data []byte) []interface{} {
 	ionline_status := search.SearchArray(data, "online_status", []string{}...)
 	return ionline_status
 }
 
-func statOnline(online_status []interface{}) int {
+func OnlineCount(online_status []interface{}) int {
 	online_count := 0
 	for _, ion := range online_status {
 		if on, ok := ion.(map[string]interface{}); ok {
@@ -65,7 +65,7 @@ func Persist(DB *dbu.Collection, idata ...interface{}) int {
 }
 
 func PersistIUsers(DB *dbu.Collection, data []byte) (int, []string) {
-	iuser := searchIUsers(data)
+	iuser := SearchIUsers(data)
 	users := make([]interface{}, 0, len(iuser))
 	uids := make([]string, 0, len(iuser))
 	for _, iu := range iuser {
@@ -88,7 +88,7 @@ func PersistIUsers(DB *dbu.Collection, data []byte) (int, []string) {
 }
 
 func RawPersistIUsers(DB *mgo.Collection, data []byte) (int, []string) {
-	iuser := searchIUsers(data)
+	iuser := SearchIUsers(data)
 	users := make([]interface{}, 0, len(iuser))
 	uids := make([]string, 0, len(iuser))
 	for _, iu := range iuser {
@@ -115,7 +115,7 @@ func RawPersistIUsers(DB *mgo.Collection, data []byte) (int, []string) {
 }
 
 func PersistIOnlineStatuses(DB *dbu.Collection, data []byte) (int, int) {
-	ionlines := searchIOnlieStatuses(data)
+	ionlines := SearchIOnlieStatuses(data)
 
 	online_statuses := make([]interface{}, 0, len(ionlines))
 	now := Now()
@@ -123,5 +123,5 @@ func PersistIOnlineStatuses(DB *dbu.Collection, data []byte) (int, int) {
 		online_status := OnlineStatus{Time: now, IOnlineStatus: ion}
 		online_statuses = append(online_statuses, online_status)
 	}
-	return Persist(DB, online_statuses...), statOnline(ionlines)
+	return Persist(DB, online_statuses...), OnlineCount(ionlines)
 }

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/Unknwon/macaron"
+
 	"fmt"
 	// "bytes"
 	"labix.org/v2/mgo/bson"
@@ -19,6 +21,88 @@ import (
 var (
 	or = false
 )
+
+func main() {
+	go v4()
+	m := macaron.Classic()
+	m.Use(macaron.Renderer())
+	m.Use(macaron.Static("public",
+		macaron.StaticOptions{
+			// 请求静态资源时的 URL 前缀，默认没有前缀
+			Prefix: "public",
+			// 禁止记录静态资源路由日志，默认为不禁止记录
+			SkipLogging: true,
+			// 当请求目录时的默认索引文件，默认为 "index.html"
+			IndexFile: "index.html",
+			// 用于返回自定义过期响应头，不能为不设置
+			// https://developers.google.com/speed/docs/insights/LeverageBrowserCaching
+			Expires: func() string { return "max-age=0" },
+		}))
+	m.Get("/", index)
+	// m.Get("/detail/:uid", detail)
+	m.Get("/switch", _switch)
+	m.Get("/all_count", all_count)
+	m.Get("/online_count", online_count)
+
+	m.Run(80)
+}
+
+func index(ctx *macaron.Context) {
+	var users []interface{}
+	err := usersC.C.Find(nil).Limit(10).All(&users)
+	if !logu.CheckErr(err) {
+		ctx.Data["users"] = users
+		ctx.Data["fetch"] = or
+		ctx.Data["all_count"] = all_count()
+		ctx.Data["online_count"] = online_count()
+		ctx.HTML(200, "index")
+	}
+}
+
+func _switch(ctx *macaron.Context) {
+	or = !or
+	ctx.Redirect("/")
+}
+
+func all_count() string {
+	n := fmt.Sprintf("%v", usersC.Count(nil))
+	return n
+}
+
+func online_count() string {
+	selector := bson.M{"online_status.status": "2"}
+	var ret []interface{}
+	onlineC.C.Find(selector).Distinct("online_status.uid", &ret)
+	return fmt.Sprintf("%v", len(ret))
+	// uids := distinct_uids()
+	// on := online_status(uids)
+	// return fmt.Sprintf("%d/%d", on, len(uids))
+}
+
+func online_status(iuids ...interface{}) int {
+	_url2 := "https://api.simplr.cn/0.1/user/online_status.json?uids="
+	uids := make([]string, 0, len(iuids))
+	for _, iuid := range iuids {
+		uid := fmt.Sprintf("%v", iuid)
+		uids = append(uids, uid)
+	}
+	juids := strings.Join(uids, ",")
+	fmt.Println(juids)
+	online_status_url := _url2 + juids
+	bys := fetch(online_status_url)
+	fmt.Println(string(bys))
+	ionline_users := db.SearchIOnlieStatuses(bys)
+	return db.OnlineCount(ionline_users)
+}
+
+func distinct_uids() []interface{} {
+	var ret []interface{}
+	err := onlineC.C.Find(nil).Distinct("online_status.uid", &ret)
+	if logu.CheckErr(err) {
+		return nil
+	}
+	return ret
+}
 
 func count(rw http.ResponseWriter, req *http.Request) {
 	n := usersC.Count(nil)
@@ -49,14 +133,13 @@ func dorun(rw http.ResponseWriter, req *http.Request) {
 	fetch := ""
 	if or {
 		fetch = "will be fetching ..."
-		go v4()
 	} else {
 		fetch = "will be having a rest ."
 	}
 	rw.Write([]byte(fetch))
 }
 
-func main() {
+func old_main() {
 	go v4()
 	http.HandleFunc("/dorun", dorun)
 	http.HandleFunc("/", count)
@@ -127,8 +210,6 @@ func v4() {
 			bys = fetch(online_status_url)
 			all, online_count := db.PersistIOnlineStatuses(MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "online"}...), bys)
 			log.Printf("%d / %d", online_count, all)
-		} else {
-			break
 		}
 
 		heart_bengbengbeng := u.Heart()

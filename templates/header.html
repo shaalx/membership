@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>{{.title}}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="/public/css/bootstrap.css">
+    <link rel="shortcut icon" type="image/png" href="/public/img/favicon.png">
+    <script src="/public/js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+  <div style="text-align: center">
+    <div class="container">
+      <div class="row" style="position:fixed;">
+        
+        <div class="span12" style="background-color:#4d5152">
+            <div class="span2 offset3"><a href="/"><h4>首页</h4></a></div>
+              <div class="span2">
+                <a href="/switch"><h4>
+                {{if .fetch}}
+                  fetching...
+                  {{else}}
+                    stopped.
+                  {{end}}
+              </h4></a></div>
+            <div class="span2"><a href=""><h4>刷新</h4></a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+

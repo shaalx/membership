@@ -1,0 +1,60 @@
+{{template "header" .}}
+
+<script type="text/javascript">
+	function all_count () {
+		$.ajax({
+			// type:"GET",
+			url:"/all_count",
+			success :function (data) {
+				$("#all_count").html("<h3>"+data+"</h3>");
+			}
+		})
+	}
+
+	function online_count () {
+		$.ajax({
+			type:"GET",
+			url:"/online_count",
+			success :function (data) {
+				$("#online_count").html("<h3>"+data+"</h3>");
+			}
+		})
+	}
+
+	window.setInterval(all_count,10000);
+	window.setInterval(online_count,5000);
+</script>
+<div class="hero-text" style="background-image: url(/public/img/bg-detail.jpg); background-repeat: repeat;">
+<!-- <div class="" style="background-color:#fff"><!-- rgb(17,63,61) -->
+	<div class="container" style="background-color:#fff">
+		<div class="hero-unit">
+			<div class="row">
+				<div id="all_count" class="span2 offset5">
+					<h3>{{.all_count}}</h3>
+				</div>
+				<div id="online_count" class="span3">
+					<h3>{{.online_count}}</h3>
+				</div>
+			</div>
+			<hr>
+		{{range $k,$v:= .users}}
+			<div class="row">
+				<div class="span3 offset2">
+					<!-- <a href="{{.avatar_hd}}" target="_blank"> /detail/{{.id}}-->
+					<a href="{{.avatar_hd}}" target="_blank"><img height="700" width="500" src="{{.avatar_large}}" class="img-rounded"></a>
+				</div>
+				<div class="span3 offset1">
+					<h4>{{.name}}</h4>
+					<h4>{{.nickname}}</h4>
+					<h6>{{.campus}}</h6>
+					<h6>{{.department}}</h6>
+					<h6>{{.degree}}</h6>
+					<h6>{{.grade}}级</h6>
+				</div>
+			</div>
+			<hr>
+		{{end}}
+		</div> <!-- hero-unit -->
+	</div>
+</div>
+ {{template "footer"}}
