@@ -16,7 +16,7 @@ type MgoDB struct {
 }
 
 type Collection struct {
-	c *mgo.Collection
+	C *mgo.Collection
 }
 
 func Conn() string {
@@ -99,7 +99,7 @@ func (db *MgoDB) SetCollection(params ...string) *Collection {
 	db.Lock()
 	defer db.Unlock()
 	myC := &Collection{
-		c: c,
+		C: c,
 	}
 	db.Collection[params[1]] = myC
 	return myC
@@ -120,36 +120,36 @@ func (db *MgoDB) GetCollection(params ...string) *Collection {
 }
 
 func (c *Collection) Count(selector bson.M) int {
-	if c == nil || c.c == nil {
+	if c == nil || c.C == nil {
 		return -1
 	}
-	n, err := c.c.Find(selector).Count()
+	n, err := c.C.Find(selector).Count()
 	if logu.CheckErr(err) {
 		return -1
 	}
 	return n
 }
 
-func (c *Collection) Select(selector bson.M) *bson.M {
-	if c == nil || c.c == nil {
+func (c *Collection) Select(selector bson.M) []bson.M {
+	if c == nil || c.C == nil {
 		return nil
 	}
-	var result bson.M
-	err := c.c.Find(selector).One(&result)
+	var result []bson.M
+	err := c.C.Find(selector).All(&result)
 	if logu.CheckErr(err) {
 		return nil
 	}
-	return &result
+	return result
 }
 
 func (c *Collection) Insert(structs ...interface{}) int {
-	if c == nil || c.c == nil {
+	if c == nil || c.C == nil {
 		return -1
 	}
 	if len(structs) == 0 {
 		return 0
 	}
-	err := c.c.Insert(structs...)
+	err := c.C.Insert(structs...)
 	if logu.CheckErr(err) {
 		return -1
 	}
