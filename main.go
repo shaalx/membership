@@ -34,14 +34,11 @@ func all(rw http.ResponseWriter, req *http.Request) {
 }
 
 func search(rw http.ResponseWriter, req *http.Request) {
-	fmt.Println(req.URL)
-	fmt.Println(req.RequestURI)
 	uid := req.URL.Query().Get("uid")
 	var ret interface{}
 	selector := bson.M{
 		"id": uid,
 	}
-	fmt.Println(selector)
 	err := peopleC.Find(selector).One(&ret)
 	if logu.CheckErr(err) {
 		rw.Write([]byte(err.Error()))
