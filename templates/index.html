@@ -1,5 +1,18 @@
 {{template "header" .}}
-
+<script type="text/javascript">
+	function upsert (uid) {
+		$.ajax({
+			type:"GET",
+			url:"/upsert/"+uid,
+			success:function (data) {
+				// alert(data);
+			}
+		})	
+	}
+</script>
+<form action="/upsert/">
+	
+</form>
 <div class="hero-text" style="background-image: url(/public/img/bg-detail.jpg); background-repeat: repeat;">
 <!-- <div class="" style="background-color:#fff"><!-- rgb(17,63,61) -->
 	<div class="container" style="background-color:#fff">
@@ -22,6 +35,8 @@
 					<h6>{{.department}}</h6>
 					<h6>{{.degree}}</h6>
 					<h6>{{.grade}}级</h6>
+					<a onclick="upsert({{.id}});"><h4>update</h4></a>					
+					<!-- <button onclick="upsert({{.id}});"><h5>update</h5></button> -->
 				</div>
 			</div>
 			<hr>

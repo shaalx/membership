@@ -7,6 +7,19 @@ import (
 
 // search value
 // 查询某个路径path下的key值 string
+func SearchI(data []byte, key string, path ...string) interface{} {
+	if data == nil {
+		return ""
+	}
+	js, err := sjson.NewJson(data)
+	if logu.CheckErr(err) {
+		return ""
+	}
+	return js.GetPath(path...).Get(key).Interface()
+}
+
+// search value
+// 查询某个路径path下的key值 string
 func SearchSValue(data []byte, key string, path ...string) string {
 	if data == nil {
 		return ""

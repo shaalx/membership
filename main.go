@@ -6,6 +6,7 @@ import (
 	"github.com/shaalx/merbership/db"
 	"github.com/shaalx/merbership/dbu"
 	"github.com/shaalx/merbership/logu"
+	"github.com/shaalx/merbership/search"
 	"github.com/shaalx/merbership/u"
 	"html/template"
 	"labix.org/v2/mgo/bson"
@@ -54,6 +55,7 @@ func main() {
 	m.Get("/all_count", all_count)
 	m.Get("/online_count", online_count)
 	m.Get("/statistics", statistics)
+	m.Get("/upsert/:uid", upsert)
 
 	m.Run(80)
 }
@@ -108,6 +110,29 @@ func index(ctx *macaron.Context) {
 		ctx.Data["Next"] = template.HTML(fmt.Sprintf(`<a href="/?page=%d><h1>>>></h1></a>">`, page+1))
 		ctx.HTML(200, "index")
 	}
+}
+
+func upsert(ctn *macaron.Context) interface{} {
+	uid := ctn.Params(":uid")
+	return _upsert(uid)
+}
+
+func _upsert(uid string) interface{} {
+	// _url2 := "https://api.simplr.cn/0.1/user/online_status.json?uids=" //557471f7a341140630d4d319%2C551473eda34114331d3bfaf5%2C55560f1da3411422e127ca91%2C5557411da341140b6f82663a%2C552cb566a34114109b2925e2%2C55138c1ca3411440863bfbda%2C5513c8f2a3411478a13bf3bf%2C55140832a34114196f3bf27b%2C5563d800bd4b873a164155fd%2C55142b6ca3411428603bf5a2%2C550db261a341143b0ae91507%2C5549f272a34114481e27cda9%2C5566bc63a3411429a9f6da87%2C555bca9ba3411411bd826212%2C555fdbe0bd4b8706478a1c67%2C555dc48dbd4b87204faa60ff%2C5552eeeca341143d6927c76c%2C550eea42a34114649df2a9cd%2C55195b21a341145a8415aa91%2C555d59dfa341143873826ee1%2C555332f8a341145c0e27c89d%2C5539daf9a3411434a96ab8a6%2C5552ceb5a3411431fa27bcc5%2C5518da59a341142d171598ab&identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9"
+	_url := fmt.Sprintf("https://api.simplr.cn/0.1/user/get.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9&uid=%s", uid)
+	bys := u.Fetch(_url)
+	user := search.SearchI(bys, "user", []string{}...)
+	selector := bson.M{"id": uid}
+	n := usersC.Upsert(selector, user)
+	log.Println(n)
+
+	// _ = uids
+	// juids := strings.Join(uids, ",")
+	// online_status_url := _url2 + juids
+	// bys = u.Fetch(online_status_url)
+	// all, online_count := db.PersistIOnlineStatuses(MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "online"}...), bys)
+	// log.Printf("%d / %d", online_count, all)
+	return user
 }
 
 func Previous(ctn *macaron.Context) {
