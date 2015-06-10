@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-
 <html>
-  <head>
+<head>
     <title>Merbership{{.title}}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" type="text/css" href="/public/css/bootstrap.css">
@@ -9,6 +8,19 @@
     <script src="/public/js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
+
+  function switchFetch () {
+    $.ajax({
+      url:"/switch",
+      success:function (data) {
+        if ("true"==data) {
+          $("#fetch-btn").html("<h4><font color=\"#fff\">fetching</font></h4>");
+        }else{
+          $("#fetch-btn").html("<h4><font color=\"#fff\">stopped</font></h4>");
+        };
+      }
+    })
+  }
   function all_count () {
     $.ajax({
       // type:"GET",
@@ -29,15 +41,14 @@
         
         <div class="span12" style="background-color:#4d5152">
             <div class="span2 offset3"><a href="/"><h4>首页</h4></a></div>
-              <div class="span2">
-                <a href="/switch"><h4>
-                {{if .fetch}}
-                  fetching...
-                  {{else}}
-                    stopped.
-                  {{end}}
-              </h4></a></div>
             <div class="span2"><a href="/statistics"><h4 id="all_count">在线统计  {{.all_count}}</h4></a></div>
+              <button style="background-color:#4d5152;border:0" id="fetch-btn" onclick="switchFetch();"><h4><font color="#fff">
+                    {{if .fetch}}
+                      fetching
+                    {{else}}
+                        stopped
+                      {{end}}
+              </font></h5></button>
         </div>
       </div>
     </div>

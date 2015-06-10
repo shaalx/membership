@@ -44,7 +44,7 @@ func main() {
 	m.Get("/online_count", online_count)
 	m.Get("/statistics", statistics)
 
-	m.Run(80)
+	m.Run(8080)
 }
 
 func index(ctx *macaron.Context) {
@@ -59,9 +59,12 @@ func index(ctx *macaron.Context) {
 	}
 }
 
-func _switch(ctx *macaron.Context) {
+func _switch(ctx *macaron.Context) string {
 	or = !or
-	ctx.Redirect("/")
+	if or {
+		return "true"
+	}
+	return "false"
 }
 
 func all_count() string {
