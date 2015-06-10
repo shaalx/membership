@@ -154,6 +154,7 @@ func statistics(ctx *macaron.Context) {
 	ctx.Data["status2_len"] = len(status2)
 
 	ctx.Data["fetch"] = or
+	ctx.Data["update"] = update
 
 	ctx.HTML(200, "stat")
 }
