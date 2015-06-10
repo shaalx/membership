@@ -57,7 +57,7 @@ func main() {
 	m.Get("/statistics", statistics)
 	m.Get("/upsert/:uid", upsert)
 
-	m.Run(80)
+	m.Run(8080)
 }
 
 func index(ctx *macaron.Context) {
@@ -92,7 +92,7 @@ func index(ctx *macaron.Context) {
 	count := all_countInt()
 	end := (page + 1) * pageSize
 	if page*pageSize >= count {
-		page -= 1
+		page = count / pageSize
 		end = count
 	}
 	start := page * pageSize
