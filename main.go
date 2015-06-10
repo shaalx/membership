@@ -9,6 +9,8 @@ import (
 	"github.com/shaalx/merbership/u"
 	"labix.org/v2/mgo/bson"
 	"log"
+	"net/url"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -19,7 +21,7 @@ var (
 	onlineC = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "online"}...)
 	// usersC = dbu.RawMgoDB()
 	or     = false
-	update = false
+	update = true
 )
 
 func main() {
@@ -39,6 +41,7 @@ func main() {
 			Expires: func() string { return "max-age=0" },
 		}))
 	m.Get("/", index)
+	m.Get("/i", index)
 	// m.Get("/detail/:uid", detail)
 	m.Get("/switch", _switch)
 	m.Get("/switchUpdate", switchUpdate)
@@ -46,18 +49,55 @@ func main() {
 	m.Get("/online_count", online_count)
 	m.Get("/statistics", statistics)
 
-	m.Run(80)
+	m.Run(8080)
 }
 
 func index(ctx *macaron.Context) {
-	var users []interface{}
-	err := usersC.C.Find(nil).Limit(10).All(&users)
+	// var users []interface{}
+	// err := usersC.C.Find(nil).Limit(10).All(&users)
+	// if !logu.CheckErr(err) {
+	// 	ctx.Data["users"] = users
+	// 	ctx.Data["fetch"] = or
+	// 	ctx.Data["update"] = update
+	// 	ctx.Data["all_count"] = all_count()
+	// 	ctx.Data["online_count"] = online_count()
+	// 	ctx.HTML(200, "index")
+	// }
+
+	page := 1
+	uri := ctx.Req.RequestURI
+	URI, err := url.Parse(uri)
 	if !logu.CheckErr(err) {
-		ctx.Data["users"] = users
+		pageStr := URI.Query().Get("page")
+		page64, err := strconv.ParseInt(pageStr, 10, 0)
+		if logu.CheckErr(err) {
+			page = 1
+		} else {
+			page = int(page64)
+		}
+	}
+	if page <= 0 {
+		page = 1
+	}
+	page -= 1
+	pageSize := 10
+	count := all_countInt()
+	end := (page + 1) * pageSize
+	if page*pageSize >= count {
+		page -= 1
+		end = count
+	}
+	start := page * pageSize
+	var users []interface{}
+	err = usersC.C.Find(nil).Limit(end).All(&users)
+	if !logu.CheckErr(err) {
+		ctx.Data["users"] = users[start:]
 		ctx.Data["fetch"] = or
 		ctx.Data["update"] = update
-		ctx.Data["all_count"] = all_count()
+		ctx.Data["all_count"] = fmt.Sprintf("%v", count)
 		ctx.Data["online_count"] = online_count()
+		ctx.Data["Previous"] = "<" // fmt.Sprintf(`<a href="/?page=%d><h1><<<</h1></a>">`, page-1)
+		ctx.Data["Next"] = ">"     //fmt.Sprintf(`<a href="/?page=%d><h1>>>></h1></a>">`, page+1)
 		ctx.HTML(200, "index")
 	}
 }
@@ -81,6 +121,10 @@ func switchUpdate(ctx *macaron.Context) string {
 func all_count() string {
 	n := fmt.Sprintf("%v", usersC.Count(nil))
 	return n
+}
+
+func all_countInt() int {
+	return usersC.Count(nil)
 }
 
 func online_count() string {

@@ -155,3 +155,17 @@ func (c *Collection) Insert(structs ...interface{}) int {
 	}
 	return len(structs)
 }
+
+func (c *Collection) Upsert(selector bson.M, change interface{}) int {
+	if c == nil || c.C == nil {
+		return -1
+	}
+	if nil == selector {
+		return 0
+	}
+	_, err := c.C.Upsert(selector, change)
+	if logu.CheckErr(err) {
+		return -1
+	}
+	return 1
+}

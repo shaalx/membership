@@ -4,6 +4,10 @@
 <!-- <div class="" style="background-color:#fff"><!-- rgb(17,63,61) -->
 	<div class="container" style="background-color:#fff">
 		<div class="hero-unit">
+			<div class="rwo" style="text-align:center">
+				<div class="span2">{{html .Previous}}</div>
+				<div class="span2 offset4">{{html .Next}}</div>
+			</div>
 			<hr>
 		{{range $k,$v:= .users}}
 			<div class="row">
@@ -23,6 +27,29 @@
 			<hr>
 		{{end}}
 		</div> <!-- hero-unit -->
+
+	<!-- 	<div class="panel-footer">
+			<nav >
+				 <ul class="pagination" >
+				 <li>
+				 <a href="#" aria-label="Previous">
+				 <span aria-hidden="true">&laquo;</span>
+				 </a>
+				 </li>
+				 <li class="active"><a href="/?page=1">1</a></li>
+				 <li><a href="/?page=2">2</a></li>
+				 <li><a href="/?page=3">3</a></li>
+				<li><a href="/?page=4">4</a></li>
+				<li><a href="/?page=5">5</a></li>
+				<li>
+				<a href="#" aria-label="Next">
+				<span aria-hidden="true">&raquo;</span>
+				</a>
+				</li>
+				</ul>
+			</nav>
+	</div> -->
+
 	</div>
 </div>
  {{template "footer"}}
