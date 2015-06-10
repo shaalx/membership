@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/shaalx/merbership/dbu"
 	"github.com/shaalx/merbership/logu"
+	"github.com/shaalx/merbership/u"
 	// "github.com/shaalx/merbership/logu"
 	"github.com/shaalx/merbership/search"
 	"labix.org/v2/mgo"
@@ -58,6 +59,50 @@ func OnlineCount(online_status []interface{}) int {
 		}
 	}
 	return online_count
+}
+
+func SearchOnlineUids(online_status []interface{}) ([]interface{}, []interface{}, []interface{}) {
+	istatus0 := make([]interface{}, 0, len(online_status))
+	istatus1 := make([]interface{}, 0, len(online_status))
+	istatus2 := make([]interface{}, 0, len(online_status))
+	for _, ion := range online_status {
+		if on, ok := ion.(map[string]interface{}); ok {
+			status := fmt.Sprintf("%v", on["status"])
+			iuid := on["uid"]
+			if strings.EqualFold(status, "2") {
+				istatus2 = append(istatus2, iuid)
+			} else if strings.EqualFold(status, "1") {
+				istatus1 = append(istatus1, iuid)
+			} else if strings.EqualFold(status, "0") {
+				istatus0 = append(istatus0, iuid)
+			}
+		}
+	}
+	return istatus0, istatus1, istatus2
+}
+
+func DistinctUids(onlineC *dbu.Collection) []string {
+	var ret []interface{}
+	err := onlineC.C.Find(nil).Distinct("online_status.uid", &ret)
+	if logu.CheckErr(err) {
+		return nil
+	}
+	uids := make([]string, 0, len(ret))
+	for _, iui := range ret {
+		ui := fmt.Sprintf("%v", iui)
+		ui = strings.TrimSpace(ui)
+		uids = append(uids, ui)
+	}
+	return uids
+}
+
+func OnlineUids(iuids ...string) ([]interface{}, []interface{}, []interface{}) {
+	_url2 := "https://api.simplr.cn/0.1/user/online_status.json?uids="
+	juids := strings.Join(iuids, ",")
+	url_ := _url2 + juids
+	bys := u.Fetch(url_)
+	ionline_users := SearchIOnlieStatuses(bys)
+	return SearchOnlineUids(ionline_users)
 }
 
 func Persist(DB *dbu.Collection, idata ...interface{}) int {
