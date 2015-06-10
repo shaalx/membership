@@ -46,7 +46,7 @@ func main() {
 	m.Get("/online_count", online_count)
 	m.Get("/statistics", statistics)
 
-	m.Run(8080)
+	m.Run(80)
 }
 
 func index(ctx *macaron.Context) {
