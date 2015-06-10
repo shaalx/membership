@@ -7,6 +7,7 @@ import (
 	"github.com/shaalx/merbership/dbu"
 	"github.com/shaalx/merbership/logu"
 	"github.com/shaalx/merbership/u"
+	"html/template"
 	"labix.org/v2/mgo/bson"
 	"log"
 	"net/url"
@@ -22,7 +23,12 @@ var (
 	// usersC = dbu.RawMgoDB()
 	or     = false
 	update = true
+	page   int
 )
+
+func init() {
+	page = 1
+}
 
 func main() {
 	go v4()
@@ -41,8 +47,8 @@ func main() {
 			Expires: func() string { return "max-age=0" },
 		}))
 	m.Get("/", index)
-	m.Get("/i", index)
-	// m.Get("/detail/:uid", detail)
+	m.Get("/previous", Previous)
+	m.Get("/next", Next)
 	m.Get("/switch", _switch)
 	m.Get("/switchUpdate", switchUpdate)
 	m.Get("/all_count", all_count)
@@ -64,7 +70,7 @@ func index(ctx *macaron.Context) {
 	// 	ctx.HTML(200, "index")
 	// }
 
-	page := 1
+	// page = 1
 	uri := ctx.Req.RequestURI
 	URI, err := url.Parse(uri)
 	if !logu.CheckErr(err) {
@@ -88,6 +94,7 @@ func index(ctx *macaron.Context) {
 		end = count
 	}
 	start := page * pageSize
+	page += 1
 	var users []interface{}
 	err = usersC.C.Find(nil).Limit(end).All(&users)
 	if !logu.CheckErr(err) {
@@ -96,10 +103,23 @@ func index(ctx *macaron.Context) {
 		ctx.Data["update"] = update
 		ctx.Data["all_count"] = fmt.Sprintf("%v", count)
 		ctx.Data["online_count"] = online_count()
-		ctx.Data["Previous"] = "<" // fmt.Sprintf(`<a href="/?page=%d><h1><<<</h1></a>">`, page-1)
-		ctx.Data["Next"] = ">"     //fmt.Sprintf(`<a href="/?page=%d><h1>>>></h1></a>">`, page+1)
+		// ctx.Data["Previous"] = template.HTML(fmt.Sprintf(`<a href="/?page=%d><h1><<<</h1></a>">`, page-1))
+		ctx.Data["Previous"] = template.HTMLEscapeString("<h1>Previous</h1>")
+		ctx.Data["Next"] = template.HTML(fmt.Sprintf(`<a href="/?page=%d><h1>>>></h1></a>">`, page+1))
 		ctx.HTML(200, "index")
 	}
+}
+
+func Previous(ctn *macaron.Context) {
+	page -= 1
+	fmt.Println(page)
+	ctn.Redirect(fmt.Sprintf("/?page=%d", page))
+}
+
+func Next(ctn *macaron.Context) {
+	page += 1
+	fmt.Println(page)
+	ctn.Redirect(fmt.Sprintf("/?page=%d", page))
 }
 
 func _switch(ctx *macaron.Context) string {
