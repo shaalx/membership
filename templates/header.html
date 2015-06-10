@@ -21,6 +21,19 @@
       }
     })
   }
+
+  function switchUpdate () {
+    $.ajax({
+      url:"/switchUpdate",
+      success:function (data) {
+        if ("true"==data) {
+          $("#update-btn").html("<h4><font color=\"#fff\">update</font></h4>");
+        }else{
+          $("#update-btn").html("<h4><font color=\"#fff\">exist</font></h4>");
+        };
+      }
+    })
+  }
   function all_count () {
     $.ajax({
       // type:"GET",
@@ -40,15 +53,27 @@
       <div class="row" style="position:fixed;">
         
         <div class="span12" style="background-color:#4d5152">
-            <div class="span2 offset3"><a href="/"><h4>首页</h4></a></div>
+            <div class="span2 offset2"><a href="/"><h4>首页</h4></a></div>
             <div class="span2"><a href="/statistics"><h4 id="all_count">在线统计  {{.all_count}}</h4></a></div>
-              <button style="background-color:#4d5152;border:0" id="fetch-btn" onclick="switchFetch();"><h4><font color="#fff">
-                    {{if .fetch}}
-                      fetching
-                    {{else}}
-                        stopped
-                      {{end}}
-              </font></h5></button>
+              <div class="span2">
+                    <button style="background-color:#4d5152;border:0" id="fetch-btn" onclick="switchFetch();"><h4><font color="#fff">
+                          {{if .fetch}}
+                            fetching
+                          {{else}}
+                              stopped
+                            {{end}}
+                    </font></h5></button>
+              </div>
+              <div class="span2">
+                    <button style="background-color:#4d5152;border:0" id="update-btn" onclick="switchUpdate();"><h4><font color="#fff">
+                          {{if .update}}
+                            update
+                          {{else}}
+                              exist
+                            {{end}}
+                    </font></h5></button>
+              </div>
+       
         </div>
       </div>
     </div>

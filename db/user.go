@@ -109,9 +109,24 @@ func Persist(DB *dbu.Collection, idata ...interface{}) int {
 	return DB.Insert(idata...)
 }
 
-func PersistIUsers(DB *dbu.Collection, data []byte) (int, []string) {
+func UpdatePersist(DB *dbu.Collection, idata ...interface{}) int {
+	var selector bson.M
+	var count int
+	for _, it := range idata {
+		data, ok := it.(map[string]interface{})
+		if ok {
+			selector = bson.M{"id": data["id"]}
+			DB.C.Update(selector, it)
+			count++
+		}
+	}
+	return count
+}
+
+func PersistIUsers(DB *dbu.Collection, data []byte, updateInsert bool) (int, []string) {
 	iuser := SearchIUsers(data)
 	users := make([]interface{}, 0, len(iuser))
+	updateInsertUsers := make([]interface{}, 0, len(iuser))
 	uids := make([]string, 0, len(iuser))
 	for _, iu := range iuser {
 		bys := dbu.I2JsonBytes(iu)
@@ -123,13 +138,20 @@ func PersistIUsers(DB *dbu.Collection, data []byte) (int, []string) {
 			if 0 == DB.Count(selector) {
 				users = append(users, iu)
 				log.Printf("%s >>>>>>>>>>>>>>> {DB}", uid)
+			} else if updateInsert {
+				updateInsertUsers = append(updateInsertUsers, iu)
+				log.Printf("%s ->->->->->->->->->-> {DB}", uid)
 			} else {
 				log.Printf("%s has existed.", uid)
 			}
 			uids = append(uids, uid)
 		}
 	}
-	return Persist(DB, users...), uids
+	var updateCount int
+	if updateInsert {
+		updateCount = UpdatePersist(DB, updateInsertUsers...)
+	}
+	return Persist(DB, users...) + updateCount, uids
 }
 
 func RawPersistIUsers(DB *mgo.Collection, data []byte) (int, []string) {

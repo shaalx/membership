@@ -18,7 +18,8 @@ var (
 	usersC  = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "users"}...)
 	onlineC = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "online"}...)
 	// usersC = dbu.RawMgoDB()
-	or = false
+	or     = false
+	update = false
 )
 
 func main() {
@@ -40,6 +41,7 @@ func main() {
 	m.Get("/", index)
 	// m.Get("/detail/:uid", detail)
 	m.Get("/switch", _switch)
+	m.Get("/switchUpdate", switchUpdate)
 	m.Get("/all_count", all_count)
 	m.Get("/online_count", online_count)
 	m.Get("/statistics", statistics)
@@ -53,6 +55,7 @@ func index(ctx *macaron.Context) {
 	if !logu.CheckErr(err) {
 		ctx.Data["users"] = users
 		ctx.Data["fetch"] = or
+		ctx.Data["update"] = update
 		ctx.Data["all_count"] = all_count()
 		ctx.Data["online_count"] = online_count()
 		ctx.HTML(200, "index")
@@ -62,6 +65,14 @@ func index(ctx *macaron.Context) {
 func _switch(ctx *macaron.Context) string {
 	or = !or
 	if or {
+		return "true"
+	}
+	return "false"
+}
+
+func switchUpdate(ctx *macaron.Context) string {
+	update = !update
+	if update {
 		return "true"
 	}
 	return "false"
@@ -113,7 +124,7 @@ func v4() {
 	for {
 		if or {
 			bys := u.Fetch(_url)
-			n, uids := db.PersistIUsers(MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "users"}...), bys)
+			n, uids := db.PersistIUsers(MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "users"}...), bys, update)
 			log.Println(n)
 
 			_ = uids
