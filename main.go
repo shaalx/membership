@@ -57,7 +57,7 @@ func main() {
 	m.Get("/statistics", statistics)
 	m.Get("/upsert/:uid", upsert)
 
-	m.Run(8080)
+	m.Run(80)
 }
 
 func index(ctx *macaron.Context) {
