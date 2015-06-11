@@ -99,16 +99,25 @@ func index(ctx *macaron.Context) {
 	pageSize := 10
 	count := all_countInt()
 	end := (page + 1) * pageSize
+	start := page * pageSize
 	if page*pageSize >= count {
 		page = count / pageSize
 		end = count
+		if pageSize <= count {
+			start = 0
+		} else {
+			start = (page - 1) * pageSize
+		}
 	}
-	start := page * pageSize
+	if start < 0 {
+		start = 0
+	}
+	fmt.Println(start, end, page)
 	page += 1
 	var users []interface{}
-	err = usersC.C.Find(nil).Limit(end).All(&users)
+	err = usersC.C.Find(nil).Skip(start).Limit(end).All(&users)
 	if !logu.CheckErr(err) {
-		ctx.Data["users"] = users[start:]
+		ctx.Data["users"] = users
 		ctx.Data["fetch"] = or
 		ctx.Data["update"] = update
 		ctx.Data["all_count"] = fmt.Sprintf("%v", count)
