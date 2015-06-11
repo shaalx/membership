@@ -115,7 +115,8 @@ func index(ctx *macaron.Context) {
 	}
 	page += 1
 	var users []interface{}
-	err = usersC.C.Find(nil).Skip(start).Limit(end).All(&users)
+	err = usersC.C.Find(nil).Skip(start).Limit(pageSize).All(&users)
+	fmt.Println(start, end, len(users))
 	if !logu.CheckErr(err) {
 		ctx.Data["users"] = users
 		ctx.Data["fetch"] = or
