@@ -18,10 +18,33 @@ type OnlineStatus struct {
 	Time          string      `bson:"time"`
 	IOnlineStatus interface{} `bson:"online_status"`
 }
+type DOnlineStatus struct {
+	Time          int64       `bson:"time"`
+	IOnlineStatus interface{} `bson:"online_status"`
+}
 
 func Now() string {
 	_now := time.Now()
 	return _now.String()
+	// loc, err := time.LoadLocation("Europe/Paris")
+	// if logu.CheckErr(err) {
+	// 	return _now.String()
+	// }
+	// st := "2006-01-02 08:00"
+	// time3, _ := time.Parse("2006-01-02 15:04", st)
+	// fmt.Println("time3 is :", time3)
+	// nowf := time.Now().Format(st)
+	// nowp, err := time.ParseInLocation(nowf, st, loc)
+	// if logu.CheckErr(err) {
+	// 	return _now.String()
+	// }
+	// fmt.Printf("parse time is %v", nowp)
+	// return nowp.String()
+}
+
+func NowUnix() int64 {
+	_now := time.Now()
+	return _now.Unix()
 	// loc, err := time.LoadLocation("Europe/Paris")
 	// if logu.CheckErr(err) {
 	// 	return _now.String()
@@ -191,4 +214,25 @@ func PersistIOnlineStatuses(DB *dbu.Collection, data []byte) (int, int) {
 		online_statuses = append(online_statuses, online_status)
 	}
 	return Persist(DB, online_statuses...), OnlineCount(ionlines)
+}
+
+func UpdatePersistIOnlineStatuses(DB *dbu.Collection, data []byte) (int, int) {
+	ionlines := SearchIOnlieStatuses(data)
+	ret_count := 0
+	// online_statuses := make([]interface{}, 0, len(ionlines))
+	now := NowUnix()
+	for _, ion := range ionlines {
+		online_status := DOnlineStatus{Time: now, IOnlineStatus: ion}
+		if iuser, ok := ion.(map[string]interface{}); ok {
+			if uid, ok := iuser["uid"]; ok {
+				selector := bson.M{"online_status.uid": uid}
+				n := DB.Upsert(selector, online_status)
+				if n > 0 {
+					ret_count++
+				}
+			}
+		}
+		// online_statuses = append(online_statuses, online_status)
+	}
+	return ret_count, len(ionlines)
 }

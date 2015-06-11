@@ -12,6 +12,7 @@ import (
 	"labix.org/v2/mgo/bson"
 	"log"
 	"net/url"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -55,6 +56,7 @@ func main() {
 	m.Get("/all_count", all_count)
 	m.Get("/online_count", online_count)
 	m.Get("/statistics", statistics)
+	m.Get("/online_stat", online_statistics)
 	m.Get("/upsert/:uid", upsert)
 
 	m.Run(80)
@@ -221,6 +223,7 @@ func v4() {
 			online_status_url := _url2 + juids
 			bys = u.Fetch(online_status_url)
 			all, online_count := db.PersistIOnlineStatuses(MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "online"}...), bys)
+			// go db.UpdatePersistIOnlineStatuses(MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "donline"}...), bys)
 			log.Printf("%d / %d", online_count, all)
 		}
 
@@ -246,4 +249,98 @@ func statistics(ctx *macaron.Context) {
 	ctx.Data["update"] = update
 
 	ctx.HTML(200, "stat")
+}
+
+func online_statistics(ctx *macaron.Context) {
+	all := onlineC.ISelect(nil)
+	status0_m := make(map[string]int64, 0)
+	status1_m := make(map[string]int64, 0)
+	status2_m := make(map[string]int64, 0)
+
+	for _, iuser := range all {
+		bys := dbu.I2JsonBytes(iuser)
+		uid := search.SearchSValue(bys, "uid", []string{"online_status"}...)
+		status := search.SearchSValue(bys, "status", []string{"online_status"}...)
+		switch status {
+		case "0":
+			status0_m[uid]++
+		case "1":
+			status1_m[uid]++
+		case "2":
+			status2_m[uid]++
+		}
+	}
+
+	var status0, status1, status2 SVisitTimes
+	status0 = m2s_sorted(status0_m)
+	status1 = m2s_sorted(status1_m)
+	status2 = m2s_sorted(status2_m)
+
+	ctx.Data["status0_len"] = len(status0_m)
+	ctx.Data["status1_len"] = len(status1_m)
+	ctx.Data["status2_len"] = len(status2_m)
+
+	var end0, end1, end2 int
+	len0 := len(status0)
+	len1 := len(status1)
+	len2 := len(status2)
+	if 21 > len0 {
+		end0 = len0
+	} else {
+		end0 = 21
+	}
+	if 21 > len1 {
+		end1 = len1
+	} else {
+		end1 = 21
+	}
+	if 21 > len2 {
+		end2 = len2
+	} else {
+		end2 = 21
+	}
+	ctx.Data["status0"] = status0[:end0]
+	ctx.Data["status1"] = status1[:end1]
+	ctx.Data["status2"] = status2[:end2]
+
+	ctx.Data["all_count"] = len(db.DistinctUids(onlineC))
+	ctx.Data["fetch"] = or
+	ctx.Data["update"] = update
+
+	ctx.HTML(200, "onlinestat")
+}
+
+func m2s_sorted(m map[string]int64) []VisitTimes {
+	s := make(SVisitTimes, 0, len(m))
+	for k, v := range m {
+		s = append(s, NewVisitTimes(k, v))
+	}
+	sort.Sort(s)
+	return s
+}
+
+type VisitTimes struct {
+	UID   string `json:"uid"`
+	Times int64  `json:"times"`
+}
+
+func NewVisitTimes(uid string, times int64) VisitTimes {
+	return VisitTimes{
+		UID:   uid,
+		Times: times,
+	}
+}
+
+type SVisitTimes []VisitTimes
+
+func (s SVisitTimes) Len() int {
+	return len(s)
+}
+
+func (s SVisitTimes) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func (s SVisitTimes) Less(i, j int) bool {
+	return s[i].Times > s[j].Times
 }
