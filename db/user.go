@@ -19,6 +19,20 @@ type ViCount struct {
 	VCount int64  `bson:"vcount"`
 }
 
+type VViCount struct {
+	UID    string `bson:"uid"`
+	VCount int64  `bson:"vcount"`
+	Avatar string `bson:"avatar"`
+}
+
+func NewVViCount(uid string, vcount int64, avatar string) *VViCount {
+	return &VViCount{
+		UID:    uid,
+		VCount: vcount,
+		Avatar: avatar,
+	}
+}
+
 type OnlineStatus struct {
 	Time          string      `bson:"time"`
 	IOnlineStatus interface{} `bson:"online_status"`

@@ -363,9 +363,21 @@ func (s SVisitTimes) Less(i, j int) bool {
 
 func vcount(ctn *macaron.Context) {
 	var vcounts []db.ViCount
+	var vvcounts []*db.VViCount
 	err := vcountC.C.Find(nil).Sort("-vcount").Limit(21).All(&vcounts)
 	if !logu.CheckErr(err) {
-		ctn.Data["vcounts"] = vcounts
+		var selector_u bson.M
+		for _, vc := range vcounts {
+			selector_u = bson.M{"id": vc.UID}
+			var iu interface{}
+			err = usersC.C.Find(selector_u).One(&iu)
+			if !logu.CheckErr(err) {
+				avatar := search.ISearchSValue(iu, "avatar_large", []string{}...)
+				vvcount := db.NewVViCount(vc.UID, vc.VCount, avatar)
+				vvcounts = append(vvcounts, vvcount)
+			}
+		}
+		ctn.Data["vcounts"] = vvcounts
 
 		ctn.Data["all_count"] = len(db.DistinctUids(onlineC))
 		ctn.Data["fetch"] = or
