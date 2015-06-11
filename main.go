@@ -59,6 +59,7 @@ func main() {
 	m.Get("/statistics", statistics)
 	m.Get("/online_stat", online_statistics)
 	m.Get("/vcount", vcount)
+	m.Get("/avatar/:uid", avatar)
 	m.Get("/upsert/:uid", upsert)
 
 	m.Run(80)
@@ -112,7 +113,6 @@ func index(ctx *macaron.Context) {
 	if start < 0 {
 		start = 0
 	}
-	fmt.Println(start, end, page)
 	page += 1
 	var users []interface{}
 	err = usersC.C.Find(nil).Skip(start).Limit(end).All(&users)
@@ -127,6 +127,12 @@ func index(ctx *macaron.Context) {
 		ctx.Data["Next"] = template.HTML(fmt.Sprintf(`<a href="/?page=%d><h1>>>></h1></a>">`, page+1))
 		ctx.HTML(200, "index")
 	}
+}
+
+func avatar(ctn *macaron.Context) string {
+	uid := ctn.Params(":uid")
+	iuser := _upsert(uid)
+	return search.ISearchSValue(iuser, "avatar_large", []string{}...)
 }
 
 func upsert(ctn *macaron.Context) interface{} {

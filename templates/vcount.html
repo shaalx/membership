@@ -21,6 +21,16 @@
 		})
 	}
 
+	function avatar(avatarid,uid) {
+		$.ajax({
+			type:"GET",
+			url:"/avatar/"+uid,
+			success :function (data) {
+				$("#avatar"+avatarid).html("<img src=\""+data+"\">");
+			}
+		})
+	}
+
 	// window.setInterval(all_count,10000);
 	// window.setInterval(online_count,5000);
 </script>
@@ -34,8 +44,10 @@
 			<div class="row">
 				{{range $k,$v:= .vcounts}}
 						<div class="span3">
-							<h3>{{$v.VCount}}</h3>
-							<a href="http://online.daoapp.io/detail/{{$v.UID}}" target="_blank"><img src="{{$v.Avatar}}"></a>
+							<a onclick="avatar({{$k}},{{$v.UID}});"><h3>{{$v.VCount}}</h3></a>
+							<a href="http://online.daoapp.io/detail/{{$v.UID}}" target="_blank">
+							<div id="avatar{{$k}}"><img src="{{$v.Avatar}}"></div>
+							</a>
 						</div>
 				{{end}}
 			</div>			
