@@ -16,6 +16,7 @@ import (
 
 type ViCount struct {
 	UID    string `bson:"uid"`
+	Status string `bson:"status"`
 	VCount int64  `bson:"vcount"`
 }
 
@@ -262,10 +263,14 @@ func VisitCountStat(DB *dbu.Collection, data []byte) (int, int) {
 
 	for _, ion := range ionlines {
 		uid := search.ISearchSValue(ion, "uid", []string{}...)
+		status := fmt.Sprintf("%v", search.ISearchI(ion, "status", []string{}...))
+		if len(status) <= 0 {
+			status = "0"
+		}
 		if len(uid) <= 0 {
 			continue
 		}
-		selector := bson.M{"uid": uid}
+		selector := bson.M{"uid": uid, "status": status}
 		var old ViCount
 		err := DB.C.Find(selector).One(&old)
 		if logu.CheckErr(err) {
@@ -274,6 +279,7 @@ func VisitCountStat(DB *dbu.Collection, data []byte) (int, int) {
 		} else {
 			old.VCount++
 		}
+		old.Status = status
 		n := DB.Upsert(selector, old)
 		if n > 0 {
 			ret_count++

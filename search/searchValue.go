@@ -21,6 +21,23 @@ func SearchI(data []byte, key string, path ...string) interface{} {
 
 // search value
 // 查询某个路径path下的key值 string
+func ISearchI(idata interface{}, key string, path ...string) interface{} {
+	if idata == nil {
+		return ""
+	}
+	data, err := json.Marshal(idata)
+	if logu.CheckErr(err) {
+		return ""
+	}
+	js, err := sjson.NewJson(data)
+	if logu.CheckErr(err) {
+		return ""
+	}
+	return js.GetPath(path...).Get(key).Interface()
+}
+
+// search value
+// 查询某个路径path下的key值 string
 func SearchSValue(data []byte, key string, path ...string) string {
 	if data == nil {
 		return ""
