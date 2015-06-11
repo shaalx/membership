@@ -79,11 +79,15 @@ func index(ctx *macaron.Context) {
 	URI, err := url.Parse(uri)
 	if !logu.CheckErr(err) {
 		pageStr := URI.Query().Get("page")
-		page64, err := strconv.ParseInt(pageStr, 10, 0)
-		if logu.CheckErr(err) {
+		if len(pageStr) <= 0 {
 			page = 1
 		} else {
-			page = int(page64)
+			page64, err := strconv.ParseInt(pageStr, 10, 0)
+			if logu.CheckErr(err) {
+				page = 1
+			} else {
+				page = int(page64)
+			}
 		}
 	}
 	if page <= 0 {
