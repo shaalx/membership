@@ -24,7 +24,7 @@
 	function avatar(avatarid,uid) {
 		$.ajax({
 			type:"GET",
-			url:"/avatar/"+uid,
+			url:"/upsert/"+uid,
 			success :function (data) {
 				$("#avatar"+avatarid).html("<img src=\""+data+"\">");
 			}

@@ -59,7 +59,6 @@ func main() {
 	m.Get("/statistics", statistics)
 	m.Get("/online_stat", online_statistics)
 	m.Get("/vcount", vcount)
-	m.Get("/avatar/:uid", avatar)
 	m.Get("/upsert/:uid", upsert)
 
 	m.Run(80)
@@ -130,15 +129,11 @@ func index(ctx *macaron.Context) {
 	}
 }
 
-func avatar(ctn *macaron.Context) string {
-	uid := ctn.Params(":uid")
-	iuser := _upsert(uid)
-	return search.ISearchSValue(iuser, "avatar_large", []string{}...)
-}
-
 func upsert(ctn *macaron.Context) interface{} {
 	uid := ctn.Params(":uid")
-	return _upsert(uid)
+	// return _upsert(uid)
+	iuser := _upsert(uid)
+	return search.ISearchSValue(iuser, "avatar_large", []string{}...)
 }
 
 func _upsert(uid string) interface{} {

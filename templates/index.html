@@ -9,6 +9,16 @@
 			}
 		})	
 	}
+
+	function avatar(avatarid,uid) {
+		$.ajax({
+			type:"GET",
+			url:"/upsert/"+uid,
+			success :function (data) {
+				$("#avatar"+avatarid).html("<img height=\"700\" width=\"500\" src=\""+data+"\" class=\"img-rounded\">");
+			}
+		})
+	}
 </script>
 <form action="/upsert/">
 	
@@ -26,16 +36,15 @@
 			<div class="row">
 				<div class="span3 offset2">
 					<!-- <a href="{{.avatar_hd}}" target="_blank"> /detail/{{.id}}-->
-					<a href="http://online.daoapp.io/detail/{{.id}}" target="_blank"><img height="700" width="500" src="{{.avatar_large}}" class="img-rounded"></a>
+					<a href="http://online.daoapp.io/detail/{{.id}}" target="_blank"><div id="avatar{{$k}}"><img height="700" width="500" src="{{.avatar_large}}" class="img-rounded"></div></a>
 				</div>
 				<div class="span3 offset1">
-					<h4>{{.name}}</h4>
+					<a onclick="avatar({{$k}},{{.id}});"><h4>{{.name}}</h4></a>
 					<h4>{{.nickname}}</h4>
 					<h6>{{.campus}}</h6>
 					<h6>{{.department}}</h6>
 					<h6>{{.degree}}</h6>
 					<h6>{{.grade}}级</h6>
-					<a onclick="upsert({{.id}});"><h4>update</h4></a>					
 					<!-- <button onclick="upsert({{.id}});"><h5>update</h5></button> -->
 				</div>
 			</div>
