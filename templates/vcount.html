@@ -30,10 +30,13 @@
 			}
 		})
 	}
-
+	function vcount () {
+		$("#vcount-form").submit();
+	}
 	// window.setInterval(all_count,10000);
-	// window.setInterval(online_count,5000);
+	window.setInterval(vcount,15000);
 </script>
+<form id="vcount-form" action="/vcount"></form>
 <div class="hero-text" style="background-image: url(/public/img/bg-detail.jpg); background-repeat: repeat;">
 <!-- <div class="" style="background-color:#fff"><!-- rgb(17,63,61) -->
 	<div class="container" style="background-color:#fff;text-align:center;">
