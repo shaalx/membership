@@ -1,6 +1,7 @@
 package search
 
 import (
+	"encoding/json"
 	"github.com/shaalx/merbership/logu"
 	sjson "github.com/shaalx/merbership/pkg3/go-simplejson"
 )
@@ -22,6 +23,27 @@ func SearchI(data []byte, key string, path ...string) interface{} {
 // 查询某个路径path下的key值 string
 func SearchSValue(data []byte, key string, path ...string) string {
 	if data == nil {
+		return ""
+	}
+	js, err := sjson.NewJson(data)
+	if logu.CheckErr(err) {
+		return ""
+	}
+	value, err := js.GetPath(path...).Get(key).String()
+	if logu.CheckErr(err) {
+		return ""
+	}
+	return value
+}
+
+// search value
+// 查询某个路径path下的key值 string
+func ISearchSValue(idata interface{}, key string, path ...string) string {
+	if idata == nil {
+		return ""
+	}
+	data, err := json.Marshal(idata)
+	if logu.CheckErr(err) {
 		return ""
 	}
 	js, err := sjson.NewJson(data)

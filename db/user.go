@@ -14,6 +14,11 @@ import (
 	"time"
 )
 
+type ViCount struct {
+	UID    string `bson:"uid"`
+	VCount int64  `bson:"vcount"`
+}
+
 type OnlineStatus struct {
 	Time          string      `bson:"time"`
 	IOnlineStatus interface{} `bson:"online_status"`
@@ -231,6 +236,33 @@ func UpdatePersistIOnlineStatuses(DB *dbu.Collection, data []byte) (int, int) {
 					ret_count++
 				}
 			}
+		}
+		// online_statuses = append(online_statuses, online_status)
+	}
+	return ret_count, len(ionlines)
+}
+
+func VisitCountStat(DB *dbu.Collection, data []byte) (int, int) {
+	ionlines := SearchIOnlieStatuses(data)
+	ret_count := 0
+
+	for _, ion := range ionlines {
+		uid := search.ISearchSValue(ion, "uid", []string{}...)
+		if len(uid) <= 0 {
+			continue
+		}
+		selector := bson.M{"uid": uid}
+		var old ViCount
+		err := DB.C.Find(selector).One(&old)
+		if logu.CheckErr(err) {
+			old.UID = fmt.Sprintf("%v", uid)
+			old.VCount = 1
+		} else {
+			old.VCount++
+		}
+		n := DB.Upsert(selector, old)
+		if n > 0 {
+			ret_count++
 		}
 		// online_statuses = append(online_statuses, online_status)
 	}

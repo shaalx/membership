@@ -22,6 +22,7 @@ var (
 	MgoDB   = dbu.NewMgoDB(dbu.Conn())
 	usersC  = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "users"}...)
 	onlineC = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "online"}...)
+	vcountC = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "vcount"}...)
 	// usersC = dbu.RawMgoDB()
 	or     = false
 	update = true
@@ -57,6 +58,7 @@ func main() {
 	m.Get("/online_count", online_count)
 	m.Get("/statistics", statistics)
 	m.Get("/online_stat", online_statistics)
+	m.Get("/vcount", vcount)
 	m.Get("/upsert/:uid", upsert)
 
 	m.Run(80)
@@ -228,6 +230,7 @@ func v4() {
 			bys = u.Fetch(online_status_url)
 			all, online_count := db.PersistIOnlineStatuses(MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "online"}...), bys)
 			// go db.UpdatePersistIOnlineStatuses(MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "donline"}...), bys)
+			go db.VisitCountStat(MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "vcount"}...), bys)
 			log.Printf("%d / %d", online_count, all)
 		}
 
@@ -347,4 +350,17 @@ func (s SVisitTimes) Swap(i, j int) {
 
 func (s SVisitTimes) Less(i, j int) bool {
 	return s[i].Times > s[j].Times
+}
+
+func vcount(ctn *macaron.Context) {
+	var vcounts []db.ViCount
+	err := vcountC.C.Find(nil).Sort("-vcount").Limit(21).All(&vcounts)
+	if !logu.CheckErr(err) {
+		ctn.Data["vcounts"] = vcounts
+
+		ctn.Data["all_count"] = len(db.DistinctUids(onlineC))
+		ctn.Data["fetch"] = or
+		ctn.Data["update"] = update
+		ctn.HTML(200, "vcount")
+	}
 }
