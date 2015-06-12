@@ -25,6 +25,11 @@ script:
     - echo ""
     - echo "Below shows how to use services"
     - ping -c 2 mongodb
+
+    - ls
+    - cd /gopath
+    - ls
+    - cd /app
     - ls
     - cd db
     - ls
