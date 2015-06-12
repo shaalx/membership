@@ -28,5 +28,5 @@ script:
     - ls
     - cd db
     - ls
-    - go test -v
+    - $GOPATH/bin/go test -v
     - go test -v ./db
