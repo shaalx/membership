@@ -60,6 +60,9 @@ func main() {
 	m.Get("/online_stat", online_statistics)
 	m.Get("/vcount", vcount)
 	m.Get("/dropvcount", dropvcount)
+	m.Get("/search", searchName)
+	m.Get("/sprevious", SPrevious)
+	m.Get("/snext", SNext)
 	m.Get("/upsert/:uid", upsert)
 
 	m.Run(80)
@@ -99,11 +102,9 @@ func index(ctx *macaron.Context) {
 	page -= 1
 	pageSize := 10
 	count := all_countInt()
-	end := (page + 1) * pageSize
 	start := page * pageSize
 	if page*pageSize >= count {
 		page = count / pageSize
-		end = count
 		if pageSize <= count {
 			start = 0
 		} else {
@@ -116,7 +117,6 @@ func index(ctx *macaron.Context) {
 	page += 1
 	var users []interface{}
 	err = usersC.C.Find(nil).Skip(start).Limit(pageSize).All(&users)
-	fmt.Println(start, end, len(users))
 	if !logu.CheckErr(err) {
 		ctx.Data["users"] = users
 		ctx.Data["fetch"] = or
@@ -165,6 +165,28 @@ func Next(ctn *macaron.Context) {
 	page += 1
 	fmt.Println(page)
 	ctn.Redirect(fmt.Sprintf("/?page=%d", page))
+}
+
+func SPrevious(ctn *macaron.Context) {
+	searchPage -= 1
+	redS := ""
+	if len(searchNameStr) > 0 {
+		redS = fmt.Sprintf("/search?page=%d&name=?", searchPage, searchNameStr)
+	} else {
+		redS = fmt.Sprintf("/search?page=%d", searchPage)
+	}
+	ctn.Redirect(redS)
+}
+
+func SNext(ctn *macaron.Context) {
+	searchPage += 1
+	redS := ""
+	if len(searchNameStr) > 0 {
+		redS = fmt.Sprintf("/search?page=%d&name=?", searchPage, searchNameStr)
+	} else {
+		redS = fmt.Sprintf("/search?page=%d", searchPage)
+	}
+	ctn.Redirect(redS)
 }
 
 func _switch(ctx *macaron.Context) string {
@@ -409,4 +431,64 @@ func dropvcount(ctx *macaron.Context) string {
 		return "false"
 	}
 	return "true"
+}
+
+var (
+	searchPage    = 1
+	searchNameStr = ""
+)
+
+func searchName(ctx *macaron.Context) {
+	uri := ctx.Req.RequestURI
+	URI, err := url.Parse(uri)
+	urlQuery := URI.Query()
+	if !logu.CheckErr(err) {
+		pageStr := urlQuery.Get("page")
+		if len(pageStr) <= 0 {
+			searchPage = 1
+		} else {
+			page64, err := strconv.ParseInt(pageStr, 10, 0)
+			if logu.CheckErr(err) {
+				searchPage = 1
+			} else {
+				searchPage = int(page64)
+			}
+		}
+	}
+	if searchPage <= 0 {
+		searchPage = 1
+	}
+	searchPage -= 1
+	pageSize := 10
+	count := all_countInt()
+	start := searchPage * pageSize
+	if searchPage*pageSize >= count {
+		searchPage = count / pageSize
+		if pageSize <= count {
+			start = 0
+		} else {
+			start = (searchPage - 1) * pageSize
+		}
+	}
+	if start < 0 {
+		start = 0
+	}
+	searchPage += 1
+
+	if !logu.CheckErr(err) {
+		searchNameStr = urlQuery.Get("name")
+		fmt.Println(searchNameStr)
+		query := bson.M{"name": bson.RegEx{searchNameStr, "."}}
+		fmt.Println(query)
+		var users []interface{}
+		err = usersC.C.Find(query).Skip(start).Limit(pageSize).All(&users)
+		if !logu.CheckErr(err) {
+			ctx.Data["users"] = users
+		}
+
+		ctx.Data["all_count"] = len(db.DistinctUids(onlineC))
+		ctx.Data["fetch"] = or
+		ctx.Data["update"] = update
+		ctx.HTML(200, "search")
+	}
 }

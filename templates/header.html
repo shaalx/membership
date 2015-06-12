@@ -45,9 +45,24 @@
   }
   window.setInterval(all_count,30000);
 
+  function search() { 
+    var name =$("#search-text").val();
+    $.ajax({
+      url:"/search?page=1&name="+name,
+      success:function  (data) {
+        $("#search-form").submit();
+      }
+    });
+    // alert(name);
+    // $("#search-form").action= "/search?page=1&name="+name;
+    // alert($("#search-form").action);
+    // console.log(($("#search-form").action);
+    // $("#search-form").submit();
+  }
 </script>
   </head>
   <body>
+  <form id="search-form" action="/search"></form>
   <div style="text-align: center">
     <div class="container">
       <div class="row" style="position:fixed;">
@@ -75,6 +90,12 @@
               </div>
               <!-- <div class="span2"><a href="/online_stat"><h4>Visit Stat</h4></a></div> -->
               <div class="span2"><a href="/vcount"><h4>VCount</h4></a></div>
+           <!--    <div>
+                    <input id="search-text" type="text" length="10">
+              </div>
+              <button onclick="search();">
+                    <h4>Do</h4>
+              </button>  -->
             <!-- <div class="span2"><a href="/previous"><h4>Previous</h4></a><a href="/next"><h4>Next</h4></a> -->
             <!-- </div> -->
        

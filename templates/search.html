@@ -1,0 +1,54 @@
+{{template "header" .}}
+
+<script type="text/javascript">
+	function avatar(avatarid,uid) {
+		$.ajax({
+			type:"GET",
+			url:"/upsert/"+uid,
+			success :function (data) {
+				$("#avatar"+avatarid).html("<img height=\"700\" width=\"500\" src=\"" +data+ "\" class=\"img-rounded\">");
+			}
+		})
+	}
+
+</script>
+
+<div class="hero-text" style="background-image: url(/public/img/bg-detail.jpg); background-repeat: repeat;">
+<!-- <div class="" style="background-color:#fff"><!-- rgb(17,63,61) -->
+	<div class="container" style="background-color:#fff;text-align:center;">
+		<div class="hero-unit">
+			<div class="row">
+				<div class="span2"><a href="/sprevious"><h2>Previous</h2></a></div>
+				<div class="span2 offset6"><a href="/snext"><h2>Next</h2></a></div>
+			</div>
+			<!-- <hr> -->
+			<!-- <h4>STATUS0</h4> -->
+			<div class="row">
+				{{range $k,$v:= .users}}
+					<div class="row">
+						<div class="span3 offset2">
+							<!-- <a href="{{.avatar_hd}}" target="_blank"> /detail/{{.id}}-->
+							<a href="http://online.daoapp.io/detail/{{.id}}" target="_blank"><div id="avatar{{$k}}"><img height="700" width="500" src="{{.avatar_large}}" class="img-rounded"></div></a>
+						</div>
+						<div class="span3 offset1">
+							<a onclick="avatar({{$k}},{{.id}});"><h4>{{.name}}</h4></a>
+							<h4>{{.nickname}}</h4>
+							<h6>{{.campus}}</h6>
+							<h6>{{.department}}</h6>
+							<h6>{{.degree}}</h6>
+							<h6>{{.grade}}级</h6>
+							<!-- <button onclick="upsert({{.id}});"><h5>update</h5></button> -->
+						</div>
+					</div>
+					<hr>
+				{{end}}
+			</div>			
+			<hr>
+			<div class="row">
+				<div class="span2"><a href="/sprevious"><h2>Previous</h2></a></div>
+				<div class="span2 offset6"><a href="/snext"><h2>Next</h2></a></div>
+			</div>
+		</div> <!-- hero-unit -->
+	</div>
+</div>
+ {{template "footer"}}
