@@ -19,9 +19,8 @@ script:
     - echo "This is an script segment"
     - echo "Run test cases here"
     - ping -c 2 mongodb
-
-  - export GOPATH=$PWD
-  - export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
-  - sudo apt-get update
-  - sudo apt-get -y install bzr
+    - export GOPATH=$PWD
+    - export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
+    - sudo apt-get update
+    - sudo apt-get -y install bzr
     - go test -v github.com/shaalx/membership/db
