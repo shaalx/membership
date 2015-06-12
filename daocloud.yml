@@ -4,7 +4,9 @@ services:
     - mongodb
 
 env:
-    - MYENV = "/gopath/app/db"
+    - MYENV = /gopath/app/db
+    - GOPATH = /go
+    - MY_ENV = /gopath/app/db
 
 install:
     - echo $MYENV
@@ -25,5 +27,6 @@ script:
     - ping -c 2 mongodb
     - ls
     - cd db
-    -ls
-    -go test -v ./db
+    - ls
+    - go test -v
+    - go test -v ./db
