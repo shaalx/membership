@@ -380,12 +380,12 @@ func vcount(ctn *macaron.Context) {
 				gender := search.ISearchSValue(iu, "gender", []string{}...)
 				vvcount := db.NewVViCount(vc.UID, vc.VCount, vc.Status, avatar)
 				if strings.EqualFold(gender, "0") {
-					if len(fvvcounts) > 11 {
+					if len(fvvcounts) >= 10 {
 						continue
 					}
 					fvvcounts = append(fvvcounts, vvcount)
 				} else {
-					if len(mvvcounts) > 11 {
+					if len(mvvcounts) >= 10 {
 						continue
 					}
 					mvvcounts = append(mvvcounts, vvcount)
