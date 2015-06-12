@@ -61,7 +61,7 @@ func main() {
 	m.Get("/vcount", vcount)
 	m.Get("/upsert/:uid", upsert)
 
-	m.Run(80)
+	m.Run(8080)
 }
 
 func index(ctx *macaron.Context) {
@@ -131,7 +131,7 @@ func index(ctx *macaron.Context) {
 
 func upsert(ctn *macaron.Context) interface{} {
 	uid := ctn.Params(":uid")
-	// return _upsert(uid)
+	// return dbu.I2JsonBytes(_upsert(uid))
 	iuser := _upsert(uid)
 	return search.ISearchSValue(iuser, "avatar_large", []string{}...)
 }

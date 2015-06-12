@@ -15,6 +15,10 @@
 			type:"GET",
 			url:"/upsert/"+uid,
 			success :function (data) {
+				// alert(data);
+				// alert(data.avatar_large);
+				// console.log(data);
+				// console.log(data.avatar_large);
 				$("#avatar"+avatarid).html("<img height=\"700\" width=\"500\" src=\""+data+"\" class=\"img-rounded\">");
 			}
 		})
