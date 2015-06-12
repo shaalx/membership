@@ -4,9 +4,9 @@ services:
     - mongodb
 
 env:
-    - MYENV = /gopath/app/db
+    - MYENV = /gopath/app
     - GOPATH = /go
-    - MY_ENV = /gopath/app/db
+    - MY_ENV = /gopath/app
 
 install:
     - echo $MYENV
@@ -23,4 +23,5 @@ script:
     - export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
     - sudo apt-get update
     - sudo apt-get -y install bzr
+    - go test -v 
     - go test -v ./db
