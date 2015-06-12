@@ -8,58 +8,57 @@
     <script src="/public/js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-
-  function switchFetch () {
-    $.ajax({
-      url:"/switch",
-      success:function (data) {
-        if ("true"==data) {
-          $("#fetch-btn").html("<h4><font color=\"#fff\">fetching</font></h4>");
-        }else{
-          $("#fetch-btn").html("<h4><font color=\"#fff\">stopped</font></h4>");
-        };
-      }
-    })
-  }
+      function switchFetch () {
+            $.ajax({
+                  url:"/switch",
+                  success:function (data) {
+                        if ("true"==data) {
+                          $("#fetch-btn").html("<h4><font color=\"#fff\">fetching</font></h4>");
+                        }else{
+                          $("#fetch-btn").html("<h4><font color=\"#fff\">stopped</font></h4>");
+                        };
+                      }
+             })
+       }
 
   function switchUpdate () {
     $.ajax({
-      url:"/switchUpdate",
-      success:function (data) {
-        if ("true"==data) {
-          $("#update-btn").html("<h4><font color=\"#fff\">update</font></h4>");
-        }else{
-          $("#update-btn").html("<h4><font color=\"#fff\">exist</font></h4>");
-        };
-      }
-    })
-  }
+          url:"/switchUpdate",
+          success:function (data) {
+              if ("true"==data) {
+                   $("#update-btn").html("<h4><font color=\"#fff\">update</font></h4>");
+               }else{
+                   $("#update-btn").html("<h4><font color=\"#fff\">exist</font></h4>");
+               };
+          }
+      })
+    }
+
   function all_count () {
-    $.ajax({
-      // type:"GET",
-      url:"/all_count",
-      success :function (data) {
-        $("#all_count").html("<h4>在线统计  "+data+"</h4>");
-      }
-    })
+        $.ajax({
+                // type:"GET",
+                url:"/all_count",
+                success :function (data) {
+                        $("#all_count").html("<h4>在线统计  "+data+"</h4>");
+                }
+        })
   }
   window.setInterval(all_count,30000);
 
   function search() { 
-    var name =$("#search-text").val();
-    $.ajax({
-      url:"/search?page=1&name="+name,
-      success:function  (data) {
-        $("#search-form").submit();
-      }
-    });
-    // alert(name);
-    // $("#search-form").action= "/search?page=1&name="+name;
-    // alert($("#search-form").action);
-    // console.log(($("#search-form").action);
-    // $("#search-form").submit();
+        var name =$("#search-text").val();
+        // alert(name);
+        $.ajax({
+              url:"/search?page=1&name="+name,
+              success:function  (data) {
+                    // alert(data);
+                    $("html").html(data);
+                    $("#search-form").submit();
+              }
+        });
   }
 </script>
+
   </head>
   <body>
   <div style="text-align: center">
@@ -68,7 +67,7 @@
         
         <div class="span12" style="background-color:#4d5152">        
             <div class="span2 offset1"><a href="/"><h4>首页</h4></a></div>
-            <div class="span2"><a href="/statistics"><h4 id="all_count">在线统计  {{.all_count}}</h4></a></div>
+            <!-- <div class="span2"><a href="/statistics"><h4 id="all_count">在线统计  {{.all_count}}</h4></a></div> -->
               <div class="span2">
                     <button style="background-color:#4d5152;border:0" id="fetch-btn" onclick="switchFetch();"><h4><font color="#fff">
                           {{if .fetch}}
@@ -89,12 +88,8 @@
               </div>
               <!-- <div class="span2"><a href="/online_stat"><h4>Visit Stat</h4></a></div> -->
               <div class="span2"><a href="/vcount"><h4>VCount</h4></a></div>
-           <!--    <div>
-                    <input id="search-text" type="text" length="10">
-              </div>
-              <button onclick="search();">
-                    <h4>Do</h4>
-              </button>  -->
+              <div class="span2"><a href="/search"><h4>Search</h4></a></div>
+            
             <!-- <div class="span2"><a href="/previous"><h4>Previous</h4></a><a href="/next"><h4>Next</h4></a> -->
             <!-- </div> -->
        
@@ -103,4 +98,4 @@
     </div>
   </div>
 
-  <!-- <form hidder="true" id="search-form" action="/search"></form> -->
+

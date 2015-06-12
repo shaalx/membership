@@ -61,6 +61,7 @@ func main() {
 	m.Get("/vcount", vcount)
 	m.Get("/dropvcount", dropvcount)
 	m.Get("/search", searchName)
+	m.Post("/searchPre", searchPre)
 	m.Get("/sprevious", SPrevious)
 	m.Get("/snext", SNext)
 	m.Get("/upsert/:uid", upsert)
@@ -436,23 +437,39 @@ func dropvcount(ctx *macaron.Context) string {
 var (
 	searchPage    = 1
 	searchNameStr = ""
+	searchCount   = 0
 )
+
+func searchPre(ctx *macaron.Context) string {
+	name := ctx.Params("name")
+	fmt.Println(name)
+	searchNameStr = name
+	return "ret"
+}
 
 func searchName(ctx *macaron.Context) {
 	uri := ctx.Req.RequestURI
 	URI, err := url.Parse(uri)
+	if logu.CheckErr(err) {
+		return
+	}
 	urlQuery := URI.Query()
-	if !logu.CheckErr(err) {
-		pageStr := urlQuery.Get("page")
-		if len(pageStr) <= 0 {
+
+	searchNameStr_ := urlQuery.Get("name")
+	if len(searchNameStr_) > 0 {
+		searchNameStr = searchNameStr_
+	}
+	query := bson.M{"$or": []bson.M{bson.M{"name": bson.RegEx{searchNameStr, "."}}, bson.M{"nickname": bson.RegEx{searchNameStr, "."}}}}
+
+	pageStr := urlQuery.Get("page")
+	if len(pageStr) <= 0 {
+		searchPage = 1
+	} else {
+		page64, err := strconv.ParseInt(pageStr, 10, 0)
+		if logu.CheckErr(err) {
 			searchPage = 1
 		} else {
-			page64, err := strconv.ParseInt(pageStr, 10, 0)
-			if logu.CheckErr(err) {
-				searchPage = 1
-			} else {
-				searchPage = int(page64)
-			}
+			searchPage = int(page64)
 		}
 	}
 	if searchPage <= 0 {
@@ -460,7 +477,7 @@ func searchName(ctx *macaron.Context) {
 	}
 	searchPage -= 1
 	pageSize := 10
-	count := all_countInt()
+	count := usersC.Count(query)
 	start := searchPage * pageSize
 	if searchPage*pageSize >= count {
 		searchPage = count / pageSize
@@ -475,20 +492,16 @@ func searchName(ctx *macaron.Context) {
 	}
 	searchPage += 1
 
+	var users []interface{}
+	err = usersC.C.Find(query).Skip(start).Limit(pageSize).All(&users)
+	searchCount = len(users)
 	if !logu.CheckErr(err) {
-		searchNameStr = urlQuery.Get("name")
-		fmt.Println(searchNameStr)
-		query := bson.M{"name": bson.RegEx{searchNameStr, "."}}
-		fmt.Println(query)
-		var users []interface{}
-		err = usersC.C.Find(query).Skip(start).Limit(pageSize).All(&users)
-		if !logu.CheckErr(err) {
-			ctx.Data["users"] = users
-		}
-
-		ctx.Data["all_count"] = len(db.DistinctUids(onlineC))
-		ctx.Data["fetch"] = or
-		ctx.Data["update"] = update
-		ctx.HTML(200, "search")
+		ctx.Data["users"] = users
 	}
+
+	ctx.Data["all_count"] = len(db.DistinctUids(onlineC))
+	ctx.Data["fetch"] = or
+	ctx.Data["update"] = update
+	ctx.HTML(200, "search")
+
 }
