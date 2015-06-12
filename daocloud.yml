@@ -28,5 +28,6 @@ script:
     - ls
     - cd db
     - ls
+    - go env
     - /gopath/bin/go test -v
     - go test -v ./db
