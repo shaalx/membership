@@ -2,7 +2,7 @@ package db
 
 import (
 	// "fmt"
-	"github.com/shaalx/merbership/dbu"
+	"github.com/shaalx/membership/dbu"
 	"testing"
 	// "time"
 )

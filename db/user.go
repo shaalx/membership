@@ -2,11 +2,11 @@ package db
 
 import (
 	"fmt"
-	"github.com/shaalx/merbership/dbu"
-	"github.com/shaalx/merbership/logu"
-	"github.com/shaalx/merbership/u"
-	// "github.com/shaalx/merbership/logu"
-	"github.com/shaalx/merbership/search"
+	"github.com/shaalx/membership/dbu"
+	"github.com/shaalx/membership/logu"
+	"github.com/shaalx/membership/u"
+	// "github.com/shaalx/membership/logu"
+	"github.com/shaalx/membership/search"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 	"log"

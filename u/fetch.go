@@ -1,8 +1,8 @@
 package u
 
 import (
-	"github.com/shaalx/merbership/logu"
-	"github.com/shaalx/merbership/pkg3/httplib"
+	"github.com/shaalx/membership/logu"
+	"github.com/shaalx/membership/pkg3/httplib"
 )
 
 func Fetch(_url string) []byte {

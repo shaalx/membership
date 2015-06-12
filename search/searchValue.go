@@ -2,8 +2,8 @@ package search
 
 import (
 	"encoding/json"
-	"github.com/shaalx/merbership/logu"
-	sjson "github.com/shaalx/merbership/pkg3/go-simplejson"
+	"github.com/shaalx/membership/logu"
+	sjson "github.com/shaalx/membership/pkg3/go-simplejson"
 )
 
 // search value

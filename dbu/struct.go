@@ -2,7 +2,7 @@ package dbu
 
 import (
 	"encoding/json"
-	"github.com/shaalx/merbership/logu"
+	"github.com/shaalx/membership/logu"
 )
 
 func ConvStruct(i interface{}, ret interface{}) bool {
