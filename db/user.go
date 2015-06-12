@@ -23,13 +23,15 @@ type ViCount struct {
 type VViCount struct {
 	UID    string `bson:"uid"`
 	VCount int64  `bson:"vcount"`
+	Status string `bson:"status"`
 	Avatar string `bson:"avatar"`
 }
 
-func NewVViCount(uid string, vcount int64, avatar string) *VViCount {
+func NewVViCount(uid string, vcount int64, status, avatar string) *VViCount {
 	return &VViCount{
 		UID:    uid,
 		VCount: vcount,
+		Status: status,
 		Avatar: avatar,
 	}
 }

@@ -41,20 +41,37 @@
 <!-- <div class="" style="background-color:#fff"><!-- rgb(17,63,61) -->
 	<div class="container" style="background-color:#fff;text-align:center;">
 		<div class="hero-unit">
-
-			<hr>
+			<div class="row">
+				<div class="span1">
+					<a href="#"><h3>START</h3></a>
+				</div>
+				<div class="span3 offset6">
+					<a href="/dropvcount"><h3>RESTART</h3></a>
+				</div>	
+			</div>
+			<!-- <hr> -->
 			<!-- <h4>STATUS0</h4> -->
 			<div class="row">
-				{{range $k,$v:= .vcounts}}
+				{{range $k,$v:= .fvvcounts}}
 						<div class="span3">
-							<a onclick="avatar({{$k}},{{$v.UID}});"><h3>{{$v.VCount}}</h3></a>
+							<a onclick="avatar({{$k}},{{$v.UID}});"><h3>{{$v.VCount}}({{$v.Status}})</h3></a>
 							<a href="http://online.daoapp.io/detail/{{$v.UID}}" target="_blank">
-							<div id="avatar{{$k}}"><img src="{{$v.Avatar}}"></div>
+							<div id="avatar{{$k}}"><img class="img-circle" height="300" width="300" src="{{$v.Avatar}}"></div>
 							</a>
 						</div>
 				{{end}}
 			</div>			
 			<hr>
+			<div class="row">
+				{{range $k,$v:= .mvvcounts}}
+						<div class="span3">
+							<a onclick="avatar({{$k}},{{$v.UID}});"><h3>{{$v.VCount}}({{$v.Status}})</h3></a>
+							<a href="http://online.daoapp.io/detail/{{$v.UID}}" target="_blank">
+							<div id="avatar{{$k}}"><img class="img-rounded" height="300" width="300"  src="{{$v.Avatar}}"></div>
+							</a>
+						</div>
+				{{end}}
+			</div>	
 		</div> <!-- hero-unit -->
 	</div>
 </div>

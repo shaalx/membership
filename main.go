@@ -59,9 +59,10 @@ func main() {
 	m.Get("/statistics", statistics)
 	m.Get("/online_stat", online_statistics)
 	m.Get("/vcount", vcount)
+	m.Get("/dropvcount", dropvcount)
 	m.Get("/upsert/:uid", upsert)
 
-	m.Run(8080)
+	m.Run(80)
 }
 
 func index(ctx *macaron.Context) {
@@ -365,8 +366,9 @@ func (s SVisitTimes) Less(i, j int) bool {
 
 func vcount(ctn *macaron.Context) {
 	var vcounts []db.ViCount
-	var vvcounts []*db.VViCount
-	err := vcountC.C.Find(nil).Sort("-vcount").Limit(21).All(&vcounts)
+	var mvvcounts []*db.VViCount
+	var fvvcounts []*db.VViCount
+	err := vcountC.C.Find(nil).Sort("-vcount").Limit(41).All(&vcounts)
 	if !logu.CheckErr(err) {
 		var selector_u bson.M
 		for _, vc := range vcounts {
@@ -374,16 +376,37 @@ func vcount(ctn *macaron.Context) {
 			var iu interface{}
 			err = usersC.C.Find(selector_u).One(&iu)
 			if !logu.CheckErr(err) {
-				avatar := search.ISearchSValue(iu, "avatar_large", []string{}...)
-				vvcount := db.NewVViCount(vc.UID, vc.VCount, avatar)
-				vvcounts = append(vvcounts, vvcount)
+				avatar := search.ISearchSValue(iu, "avatar_hd", []string{}...)
+				gender := search.ISearchSValue(iu, "gender", []string{}...)
+				vvcount := db.NewVViCount(vc.UID, vc.VCount, vc.Status, avatar)
+				if strings.EqualFold(gender, "0") {
+					if len(fvvcounts) > 11 {
+						continue
+					}
+					fvvcounts = append(fvvcounts, vvcount)
+				} else {
+					if len(mvvcounts) > 11 {
+						continue
+					}
+					mvvcounts = append(mvvcounts, vvcount)
+				}
 			}
 		}
-		ctn.Data["vcounts"] = vvcounts
+		ctn.Data["fvvcounts"] = fvvcounts
+		ctn.Data["mvvcounts"] = mvvcounts
 
 		ctn.Data["all_count"] = len(db.DistinctUids(onlineC))
 		ctn.Data["fetch"] = or
 		ctn.Data["update"] = update
 		ctn.HTML(200, "vcount")
 	}
+}
+
+func dropvcount(ctx *macaron.Context) string {
+	err := vcountC.C.DropCollection()
+	ctx.Redirect("/vcount")
+	if logu.CheckErr(err) {
+		return "false"
+	}
+	return "true"
 }
