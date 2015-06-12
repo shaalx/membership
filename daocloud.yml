@@ -23,6 +23,7 @@ script:
     - echo ""
     - echo "Below shows how to use services"
     - ping -c 2 mongodb
+    - ls
     - cd db
-    -go test -v
+    -ls
     -go test -v ./db
