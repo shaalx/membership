@@ -76,7 +76,7 @@
 			</div>
 			<div class="row">
 				{{range $k,$v:= .mvvcounts}}
-						<div class="span1">
+						<div class="span2">
 							<a onclick="avatar({{$k}},{{$v.UID}});"><h5>{{$v.Name}}</h5></a>
 							<a href="http://online.daoapp.io/detail/{{$v.UID}}" target="_blank">
 							<div id="avatar{{$k}}"><img class="img-circle" height="150" width="150"  src="{{$v.Avatar}}"></div>
