@@ -186,6 +186,18 @@ func (c *Collection) ISelect(selector bson.M) []interface{} {
 	return result
 }
 
+func (c *Collection) ISelectOne(selector bson.M) interface{} {
+	if c == nil || c.C == nil {
+		return nil
+	}
+	var result interface{}
+	err := c.C.Find(selector).One(&result)
+	if logu.CheckErr(err) {
+		return nil
+	}
+	return result
+}
+
 func (c *Collection) Like(selector bson.M) []interface{} {
 	if c == nil || c.C == nil {
 		return nil

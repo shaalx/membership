@@ -103,7 +103,7 @@ func index(ctx *macaron.Context) {
 	}
 	page -= 1
 	pageSize := 10
-	count := all_countInt()
+	count := len(db.DistinctUids(onlineC)) //all_countInt()
 	start := page * pageSize
 	if page*pageSize >= count {
 		page = count / pageSize
@@ -278,7 +278,39 @@ func v4() {
 
 func statistics(ctx *macaron.Context) {
 	duids := db.DistinctUids(onlineC)
-	status0, status1, status2 := db.OnlineUids(duids...)
+	status0_, status1_, status2_ := db.OnlineUids(duids...)
+	status0 := make([]interface{}, 0, len(status0_))
+	status1 := make([]interface{}, 0, len(status1_))
+	status2 := make([]interface{}, 0, len(status2_))
+	var selector bson.M
+	for _, iuid := range status0_ {
+		uid := strings.TrimSpace(fmt.Sprintf("%v", iuid))
+		selector = bson.M{"id": uid}
+		user := usersC.ISelectOne(selector)
+		if nil != user {
+			status0 = append(status0, user)
+		}
+	}
+	for _, iuid := range status1_ {
+		uid := strings.TrimSpace(fmt.Sprintf("%v", iuid))
+		selector = bson.M{"id": uid}
+		user := usersC.ISelectOne(selector)
+		if nil != user {
+			status1 = append(status1, user)
+		}
+	}
+	for i, iuid := range status2_ {
+		if i > 20 {
+			break
+		}
+		uid := strings.TrimSpace(fmt.Sprintf("%v", iuid))
+		selector = bson.M{"id": uid}
+		user := usersC.ISelectOne(selector)
+		if nil != user {
+			status2 = append(status2, user)
+		}
+	}
+
 	ctx.Data["status0"] = status0
 	ctx.Data["status1"] = status1
 	ctx.Data["status2"] = status2
@@ -286,7 +318,12 @@ func statistics(ctx *macaron.Context) {
 	ctx.Data["all_count"] = len(duids)
 	ctx.Data["status0_len"] = len(status0)
 	ctx.Data["status1_len"] = len(status1)
-	ctx.Data["status2_len"] = len(status2)
+	ctx.Data["status2_len"] = len(status2_)
+
+	// ctx.Data["all_count"] = len(duids)
+	// ctx.Data["status0_len"] = len(duids)
+	// ctx.Data["status1_len"] = len(duids)
+	// ctx.Data["status2_len"] = len(duids)
 
 	ctx.Data["fetch"] = or
 	ctx.Data["update"] = update

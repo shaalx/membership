@@ -21,6 +21,29 @@
 		})
 	}
 
+	function favatar(avatarid,uid) {
+		$.ajax({
+			type:"GET",
+			url:"/upsert/"+uid,
+			success :function (data) {
+				$("#favatar"+avatarid).attr("src",data);
+				$("#favatar"+avatarid).attr("hidden",false);
+				// $("#avatar"+avatarid).html("<img src=\""+data+"\">");
+			}
+		})
+	}
+
+	function mavatar(avatarid,uid) {
+		$.ajax({
+			type:"GET",
+			url:"/upsert/"+uid,
+			success :function (data) {
+				$("#mavatar"+avatarid).attr("src",data);
+				$("#mavatar"+avatarid).attr("hidden",false);
+				// $("#avatar"+avatarid).html("<img src=\""+data+"\">");
+			}
+		})
+	}
 	// window.setInterval(all_count,10000);
 	// window.setInterval(online_count,5000);
 </script>
@@ -29,61 +52,95 @@
 	<div class="container" style="background-color:#fff;text-align:center;">
 		<div class="hero-unit">
 			<div class="row">
-				<div class="span2 offset1">
-					<h3>status0</h3>
+				<div class="span2 offset1" style="color:#6f8">
+					<label>
+						<h3>在线</h3>					
+					</label>
 				</div>
-				<div class="span2 offset0.5">
-					<h3>status1</h3>
+				<div class="span2 offset0.5" style="color:#ccc">
+					<label>
+						<h3>隐身</h3>						
+					</label>
 				</div>
-				<div class="span2  offse0t.5">
-					<h3>status2</h3>
+				<div class="span2  offse0t.5" style="color:#555">
+					<label>
+						<h3>离线</h3>					
+					</label>
 				</div>
-				<div class="span2">
-					<h3>All</h3>
+				<div class="span2" style="color:#768">
+					<label>
+						<h3>总和</h3>				
+					</label>
 				</div>
 			</div>
 
 			<div class="row">
-				<div id="status0_len" class="span2 offset1">
-					<h3>{{.status0_len}}</h3>
-				</div>
-				<div id="status1_len" class="span2 offset0.5">
+				<div id="status1_len" class="span2 offset1" style="color:#6f8">
 					<h3>{{.status1_len}}</h3>
 				</div>
-				<div id="status2_len" class="span2 offset0.5">
+				<div id="status0_len" class="span2 offset0.5" style="color:#ccc">
+					<h3>{{.status0_len}}</h3>
+				</div>
+				<div id="status2_len" class="span2 offset0.5" style="color:#555">
 					<h3>{{.status2_len}}</h3>
 				</div>
-				<div id="all_count" class="span2">
+				<div id="all_count" class="span2" style="color:#768">
 					<h3>{{.all_count}}</h3>
 				</div>
 			</div>
 			<hr>
-			<h4>STATUS0</h4>
 			<div class="row">
-				{{range $k,$v:= .status0}}
-						<div class="span3">
-							<a href="http://online.daoapp.io/detail/{{.}}" target="_blank">{{$v}}</a>
-						</div>
-				{{end}}
+				<div class="span2 offset1" style="color:#6f8;text-align:left">
+					<label>
+						<h3>在线</h3>					
+					</label>
+				</div>
 			</div>
-			<hr>
-			<h4>STATUS1</h4>
 			<div class="row">
 				{{range $k,$v:= .status1}}
 						<div class="span3">
-							<a href="http://online.daoapp.io/detail/{{.}}" target="_blank">{{$v}}</a>
+							<a onclick="favatar({{$k}},{{.id}})">
+								<label style="color:#6f8"><h4>
+									{{$v.nickname}}({{$v.name}})
+								</h4></label>
+							</a>
+							<a href="http://online.daoapp.io/detail/{{.id}}">
+								<img id="favatar{{$k}}" class="img-rounded" hidden="true" src="">
+							</a>
 						</div>
 				{{end}}
 			</div>
 			<hr>
-			<h4>STATUS2</h4>
+			<div class="row">
+				<div class="span2 offset1" style="color:#ccc;text-align:left">
+					<label>
+						<h3>隐身</h3>						
+					</label>
+				</div>
+			</div>
+			<div class="row">
+				{{range $k,$v:= .status0}}
+						<div class="span3">
+							<a onclick="favatar({{$k}},{{.id}})">
+								<label style="color:#ccc"><h4>
+									{{$v.nickname}}({{$v.name}})
+								</h4></label>
+							</a>
+							<a href="http://online.daoapp.io/detail/{{.id}}">
+								<img id="mavatar{{$k}}" class="img-rounded" hidden="true" src="">
+							</a>
+						</div>
+				{{end}}
+			</div>
+			<hr>
+			<!-- <h4>离线</h4>
 			<div class="row">
 				{{range $k,$v:= .status2}}
 						<div class="span3">
 							<a href="http://online.daoapp.io/detail/{{.}}" target="_blank">{{$v}}</a>
 						</div>
 				{{end}}
-			</div>
+			</div> -->
 		</div> <!-- hero-unit -->
 	</div>
 </div>
