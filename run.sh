@@ -1,5 +1,5 @@
 #/bin/sh
 go build
 #sleep 1
-chmod +x merbership
-./merbership
+chmod +x membership
+./membership

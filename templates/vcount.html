@@ -42,29 +42,42 @@
 		<div class="hero-unit">
 			<div class="row">
 				<div class="span1">
-					<a href="#"><h3>START</h3></a>
+					<!-- <a href="#"><h3>>.<</h3></a> -->
 				</div>
 				<div class="span3 offset6">
-					<a href="/dropvcount"><h3>RESTART</h3></a>
+					<a href="/dropvcount"><h4>重新统计排名</h4></a>
 				</div>	
 			</div>
-			<!-- <hr> -->
-			<!-- <h4>STATUS0</h4> -->
+			<hr>
+			<div class="row" style="text-align:left;">
+				<div class="span3 offset1">
+				<label>
+					<h3>女生 Top 10</h3>
+				</label>
+				</div>
+			</div>
 			<div class="row">
 				{{range $k,$v:= .fvvcounts}}
-						<div class="span1">
-							<a onclick="avatar({{$k}},{{$v.UID}});"><h5>{{$v.VCount}}({{$v.Status}})</h5></a>
+						<div class="span2">
+							<a onclick="avatar({{$k}},{{$v.UID}});"><h5>{{$v.Name}}</h5></a>
 							<a href="http://online.daoapp.io/detail/{{$v.UID}}" target="_blank">
 							<div id="avatar{{$k}}"><img class="img-circle" height="150" width="150" src="{{$v.Avatar}}"></div>
 							</a>
 						</div>
 				{{end}}
 			</div>			
-			<hr>
+			<hr>	<br>
+			<div class="row" style="text-align:left;">
+				<div class="span3 offset1">
+				<label>
+					<h3>男生 Top 10</h3>
+				</label>
+				</div>
+			</div>
 			<div class="row">
 				{{range $k,$v:= .mvvcounts}}
-						<div class="span1">
-							<a onclick="avatar({{$k}},{{$v.UID}});"><h5>{{$v.VCount}}({{$v.Status}})</h5></a>
+						<div class="span2">
+							<a onclick="avatar({{$k}},{{$v.UID}});"><h5>{{$v.Name}}</h5></a>
 							<a href="http://online.daoapp.io/detail/{{$v.UID}}" target="_blank">
 							<div id="avatar{{$k}}"><img class="img-circle" height="150" width="150"  src="{{$v.Avatar}}"></div>
 							</a>

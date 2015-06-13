@@ -30,8 +30,5 @@ script:
     - ping -c 2 mongodb
     - export GOPATH=$PWD
     - export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
-    - sudo apt-get update
-    - sudo apt-get -y install bzr
     - go get github.com/shaalx/membership
-    - go test -v 
     - go test -v ./db

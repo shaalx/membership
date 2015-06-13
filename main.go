@@ -19,8 +19,8 @@ import (
 )
 
 var (
-	MgoDB = dbu.NewMgoDB("daocloud")
-	// MgoDB   = dbu.NewMgoDB(dbu.Conn())
+	// MgoDB = dbu.NewMgoDB("daocloud")
+	MgoDB   = dbu.NewMgoDB(dbu.Conn())
 	usersC  = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "users"}...)
 	onlineC = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "online"}...)
 	vcountC = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "vcount"}...)
@@ -402,7 +402,8 @@ func vcount(ctn *macaron.Context) {
 			if !logu.CheckErr(err) {
 				avatar := search.ISearchSValue(iu, "avatar_hd", []string{}...)
 				gender := search.ISearchSValue(iu, "gender", []string{}...)
-				vvcount := db.NewVViCount(vc.UID, vc.VCount, vc.Status, avatar)
+				name := search.ISearchSValue(iu, "nickname", []string{}...)
+				vvcount := db.NewVViCount(vc.UID, vc.VCount, vc.Status, avatar, name)
 				if strings.EqualFold(gender, "0") {
 					if len(fvvcounts) >= 10 {
 						continue
