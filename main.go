@@ -62,9 +62,7 @@ func main() {
 	m.Get("/vcount", vcount)
 	m.Get("/dropvcount", dropvcount)
 	m.Get("/search", searchName)
-	m.Post("/searchPre", searchPre)
-	m.Get("/sprevious", SPrevious)
-	m.Get("/snext", SNext)
+	m.Get("/search2", searchName2)
 	m.Get("/upsert/:uid", upsert)
 
 	m.Run(80)
@@ -167,28 +165,6 @@ func Next(ctn *macaron.Context) {
 	page += 1
 	fmt.Println(page)
 	ctn.Redirect(fmt.Sprintf("/?page=%d", page))
-}
-
-func SPrevious(ctn *macaron.Context) {
-	searchPage -= 1
-	redS := ""
-	if len(searchNameStr) > 0 {
-		redS = fmt.Sprintf("/search?page=%d&name=?", searchPage, searchNameStr)
-	} else {
-		redS = fmt.Sprintf("/search?page=%d", searchPage)
-	}
-	ctn.Redirect(redS)
-}
-
-func SNext(ctn *macaron.Context) {
-	searchPage += 1
-	redS := ""
-	if len(searchNameStr) > 0 {
-		redS = fmt.Sprintf("/search?page=%d&name=?", searchPage, searchNameStr)
-	} else {
-		redS = fmt.Sprintf("/search?page=%d", searchPage)
-	}
-	ctn.Redirect(redS)
 }
 
 func _switch(ctx *macaron.Context) string {
@@ -476,19 +452,6 @@ func dropvcount(ctx *macaron.Context) string {
 	return "true"
 }
 
-var (
-	searchPage    = 1
-	searchNameStr = ""
-	searchCount   = 0
-)
-
-func searchPre(ctx *macaron.Context) string {
-	name := ctx.Params("name")
-	fmt.Println(name)
-	searchNameStr = name
-	return "ret"
-}
-
 func searchName(ctx *macaron.Context) {
 	uri := ctx.Req.RequestURI
 	URI, err := url.Parse(uri)
@@ -497,10 +460,8 @@ func searchName(ctx *macaron.Context) {
 	}
 	urlQuery := URI.Query()
 
-	searchNameStr_ := urlQuery.Get("name")
-	if len(searchNameStr_) > 0 {
-		searchNameStr = searchNameStr_
-	}
+	searchNameStr := urlQuery.Get("name")
+	searchPage := 1
 	query := bson.M{"$or": []bson.M{bson.M{"name": bson.RegEx{searchNameStr, "."}}, bson.M{"nickname": bson.RegEx{searchNameStr, "."}}}}
 
 	pageStr := urlQuery.Get("page")
@@ -536,14 +497,73 @@ func searchName(ctx *macaron.Context) {
 
 	var users []interface{}
 	err = usersC.C.Find(query).Skip(start).Limit(pageSize).All(&users)
-	searchCount = len(users)
 	if !logu.CheckErr(err) {
 		ctx.Data["users"] = users
 	}
 
+	ctx.Data["searchName"] = searchNameStr
+	ctx.Data["searchPage"] = page + 1
 	ctx.Data["all_count"] = all_count()
 	ctx.Data["fetch"] = or
 	ctx.Data["update"] = update
 	ctx.HTML(200, "search")
+
+}
+
+func searchName2(ctx *macaron.Context) {
+	uri := ctx.Req.RequestURI
+	URI, err := url.Parse(uri)
+	if logu.CheckErr(err) {
+		return
+	}
+	urlQuery := URI.Query()
+
+	searchNameStr := urlQuery.Get("name")
+	searchPage := 1
+	query := bson.M{"$or": []bson.M{bson.M{"name": bson.RegEx{searchNameStr, "."}}, bson.M{"nickname": bson.RegEx{searchNameStr, "."}}}}
+
+	pageStr := urlQuery.Get("page")
+	if len(pageStr) <= 0 {
+		searchPage = 1
+	} else {
+		page64, err := strconv.ParseInt(pageStr, 10, 0)
+		if logu.CheckErr(err) {
+			searchPage = 1
+		} else {
+			searchPage = int(page64)
+		}
+	}
+	if searchPage <= 0 {
+		searchPage = 1
+	}
+	searchPage -= 1
+	pageSize := 10
+	count := usersC.Count(query)
+	start := searchPage * pageSize
+	if searchPage*pageSize >= count {
+		searchPage = count / pageSize
+		if pageSize <= count {
+			start = 0
+		} else {
+			start = (searchPage - 1) * pageSize
+		}
+	}
+	if start < 0 {
+		start = 0
+	}
+	searchPage += 1
+
+	var users []interface{}
+	err = usersC.C.Find(query).Skip(start).Limit(pageSize).All(&users)
+	if !logu.CheckErr(err) {
+		ctx.Data["users"] = users
+	}
+
+	ctx.Data["searchName"] = searchNameStr
+	ctx.Data["searchPage"] = page + 1
+	ctx.Data["all_count"] = all_count()
+	ctx.Data["fetch"] = or
+	ctx.Data["update"] = update
+	ctx.HTML(200, "search2")
 
 }

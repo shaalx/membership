@@ -47,13 +47,11 @@
 
   function search() { 
         var name =$("#search-text").val();
-        // alert(name);
+        $("#searchName").text(name);
         $.ajax({
-              url:"/search?page=1&name="+name,
+              url:"/search2?page=1&name="+name,
               success:function  (data) {
-                    // alert(data);
-                    $("html").html(data);
-                    $("#search-form").submit();
+                    $("#searchContent").html(data);
               }
         });
   }
@@ -89,6 +87,8 @@
                             {{end}}
                     </font></h4></button>
               </div>
+              <div hidden="true" id="searchName">{{.searchName}}</div>
+              <div hidden="true" id="searchPage">{{.searchPage}}</div>
             
             <!-- <div class="span2"><a href="/previous"><h4>Previous</h4></a><a href="/next"><h4>Next</h4></a> -->
             <!-- </div> -->
