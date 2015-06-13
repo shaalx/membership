@@ -25,4 +25,3 @@ script:
     - export GOPATH=$PWD
     - export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
     - go env
-    - go
