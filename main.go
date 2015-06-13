@@ -466,11 +466,13 @@ func searchName(ctx *macaron.Context) {
 	}
 	urlQuery := URI.Query()
 
+	searchD := urlQuery.Get("searchD")
+	fmt.Println(searchD)
 	searchNameStr := urlQuery.Get("searchName")
 	searchPage := 1
 	query := bson.M{"$or": []bson.M{bson.M{"name": bson.RegEx{searchNameStr, "."}}, bson.M{"nickname": bson.RegEx{searchNameStr, "."}}}}
 
-	pageStr := urlQuery.Get("page")
+	pageStr := urlQuery.Get("searchPage")
 	if len(pageStr) <= 0 {
 		searchPage = 1
 	} else {
@@ -478,7 +480,11 @@ func searchName(ctx *macaron.Context) {
 		if logu.CheckErr(err) {
 			searchPage = 1
 		} else {
-			searchPage = int(page64)
+			if strings.EqualFold(searchD, "next") {
+				searchPage = int(page64) + 1
+			} else {
+				searchPage = int(page64) - 1
+			}
 		}
 	}
 	if searchPage <= 0 {
@@ -508,7 +514,7 @@ func searchName(ctx *macaron.Context) {
 	}
 
 	ctx.Data["searchName"] = searchNameStr
-	ctx.Data["searchPage"] = searchPage + 1
+	ctx.Data["searchPage"] = searchPage
 	ctx.Data["all_count"] = all_count()
 	ctx.Data["fetch"] = or
 	ctx.Data["update"] = update
@@ -524,7 +530,7 @@ func searchName2(ctx *macaron.Context) {
 	}
 	urlQuery := URI.Query()
 
-	searchNameStr := urlQuery.Get("name")
+	searchNameStr := urlQuery.Get("searchName")
 	searchPage := 1
 	query := bson.M{"$or": []bson.M{bson.M{"name": bson.RegEx{searchNameStr, "."}}, bson.M{"nickname": bson.RegEx{searchNameStr, "."}}}}
 
@@ -536,7 +542,7 @@ func searchName2(ctx *macaron.Context) {
 		if logu.CheckErr(err) {
 			searchPage = 1
 		} else {
-			searchPage = int(page64)
+			searchPage = int(page64) + 1
 		}
 	}
 	if searchPage <= 0 {

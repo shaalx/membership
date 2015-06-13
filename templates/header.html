@@ -93,8 +93,9 @@
                       <div class="search-content">
                         <form action="/search" method="get" id="search">
                         <input id="J_searchStatus" type="submit" />
-                        <!-- <input type="hidden" name="pos" value="1"> -->
-                        <div class="search-input"><input id="J_searchInput" autocomplete="off" type="text" name="searchName" /></div>
+                        <input type="hidden" name="searchPage" value="{{.searchPage}}">
+                        <input id="searchD" type="hidden" name="searchD" value="next">
+                        <div class="search-input"><input id="J_searchInput" autocomplete="off" type="text" name="searchName" value="{{.searchName}}" /></div>
                         </form>
                       </div>
                     </div>

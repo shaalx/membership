@@ -12,31 +12,35 @@
 	}
 
 	function sprevious () {
-		var name = $("#searchName").text();
-		var page = $("#searchPage").text();
-		var pageNum=parseInt(page)-1;
-		console.log(name,page,pageNum);
-		$.ajax({
-			type:"GET",
-			url:"/search2?name="+name+"&page="+pageNum,
-			success :function (data) {
-				$("#searchContent").html(data);
-			}
-		})
+		$("#searchD").attr("value","previous")
+		$("#search").submit();
+		// var name = $("#searchName").text();
+		// var page = $("#searchPage").text();
+		// var pageNum=parseInt(page)-1;
+		// console.log(name,page,pageNum);
+		// $.ajax({
+		// 	type:"GET",
+		// 	url:"/search2?name="+name+"&page="+pageNum,
+		// 	success :function (data) {
+		// 		$("#searchContent").html(data);
+		// 	}
+		// })
 	}
 
 	function snext() {
-		var name = $("#searchName").text();
-		var page = $("#searchPage").text();
-		var pageNum=parseInt(page)+1;
-		console.log(name,page,pageNum);
-		$.ajax({
-			type:"GET",
-			url:"/search2?name="+name+"&page="+pageNum,
-			success :function (data) {
-				$("#searchContent").html(data);
-			}
-		})
+		$("#searchD").attr("value","next")
+		$("#search").submit();
+		// var name = $("#searchName").text();
+		// var page = $("#searchPage").text();
+		// var pageNum=parseInt(page)+1;
+		// console.log(name,page,pageNum);
+		// $.ajax({
+		// 	type:"GET",
+		// 	url:"/search2?name="+name+"&page="+pageNum,
+		// 	success :function (data) {
+		// 		$("#searchContent").html(data);
+		// 	}
+		// })
 	}
 </script>
 <div id="searchContent" class="hero-text" style="background-image: url(/public/img/bg-detail.jpg); background-repeat: repeat;">
