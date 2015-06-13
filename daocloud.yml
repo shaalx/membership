@@ -7,7 +7,7 @@ env:
     - MYENV = /gopath/app
     - GOPATH = /go
     - MY_ENV = /gopath/app
-    - echo uMNEZzBVHh8l9YfP:pPLpK1lkMS82cq95e@10.10.72.139:27017/lEyTj8hYrUIKgMfi       
+    - echo uMNEZzBVHh8l9YfP:pPLpK1lkMS82cq95e@10.10.72.139:27017/lEyTj8hYrUIKgMfi
     - MONGODB_PORT = tcp://10.10.72.139:27017
     - MONGODB_PORT_27017_TCP = tcp://10.10.72.139:27017
     - MONGODB_PORT_27017_TCP_ADDR = 10.10.72.139
