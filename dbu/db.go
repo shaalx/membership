@@ -6,6 +6,7 @@ import (
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -70,6 +71,9 @@ func RawMgoDB() *mgo.Collection {
 }
 
 func NewMgoDB(dailStr string) *MgoDB {
+	if strings.EqualFold(dailStr, "daocloud") {
+		dailStr = "uMNEZzBVHh8l9YfP:pPLpK1lkMS82cq95e@10.10.72.139:27017/lEyTj8hYrUIKgMfi"
+	}
 	if len(dailStr) <= 0 {
 		dailStr = "127.0.0.1:27017"
 	}

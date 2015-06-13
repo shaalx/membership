@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	MgoDB = dbu.NewMgoDB(dbu.Conn())
+	MgoDB = dbu.NewMgoDB("daocloud")
+	// MgoDB = dbu.NewMgoDB(dbu.Conn())
 	// usersC  = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "users"}...)
 	onlineC = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "online"}...)
 	// usersC = dbu.RawMgoDB()

@@ -7,7 +7,8 @@ import (
 )
 
 var (
-	MgoDB_ = NewMgoDB(Conn())
+	MgoDB_ = NewMgoDB("daocloud")
+	// MgoDB_ = NewMgoDB(Conn())
 	// upsertC = MgoDB_.GetCollection([]string{"test", "upsert"}...)
 	usersC = MgoDB_.GetCollection([]string{"lEyTj8hYrUIKgMfi", "users"}...)
 )
