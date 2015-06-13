@@ -453,6 +453,12 @@ func dropvcount(ctx *macaron.Context) string {
 }
 
 func searchName(ctx *macaron.Context) {
+	// inputtext := ctx.Params("searchName")
+	// uparse, err1 := url.Parse(inputtext)
+	// if !logu.CheckErr(err1) {
+	// 	fmt.Println(uparse.String())
+	// }
+
 	uri := ctx.Req.RequestURI
 	URI, err := url.Parse(uri)
 	if logu.CheckErr(err) {
@@ -460,7 +466,7 @@ func searchName(ctx *macaron.Context) {
 	}
 	urlQuery := URI.Query()
 
-	searchNameStr := urlQuery.Get("name")
+	searchNameStr := urlQuery.Get("searchName")
 	searchPage := 1
 	query := bson.M{"$or": []bson.M{bson.M{"name": bson.RegEx{searchNameStr, "."}}, bson.M{"nickname": bson.RegEx{searchNameStr, "."}}}}
 

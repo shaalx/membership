@@ -1,0 +1,16 @@
+/*! music-player - v0.9.24 build by Kissy-cake 
+ * @Author: baoma <nongyoubao@alibaba-inc.com> 
+ * Copyright (c) XIAMI 
+ */
+.search-wrap{position:absolute;top:5px;background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOYAAAAeCAYAAAA4q2LPAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGpSURBVHhe7d3NTsJAFEDhkcRnIIEHcKM7drrWhfH9n4MA3eI9dTRQJ0BROrM4N/lWLXV1Upn+kC6Z/X4/22w28/DYdd3Ldrt9De+73e5DUhmN0ArN0A4N0VLO6vqJg9yv1+uHOPhb6Q9LGoeWaIq2cmbjJg6ypPbhgSX9XW5rmXM7P1HyXZxyn4YHkvT/aI3mcn7lYYfYeTX8sKSbWp2Mky+ohQ9JujHOnDnD44mNi+HOkia1yDl+DStELvRIddEgLeYsU2L5trSjpGnRYh9lFDrj2kppJ0nTokWaZMFnXtpBUh006Uqs1BiaTF3XPZc2SqqDJpPfL6W20CRh+pSI1BCaNEypMd9h+q+s1BCadPFHaky/+OPlEqkt/eUSLmaWNkqqgya9JU9qCC32t+Qx3sQuteHnJnaGR02iVB/7kirKZ8vjl3TFBh+Uluoqv5wrvnT6Ei6pAtrLGf6eOI36Mi5peqdfxsWwg2dOaRq0djbKw4kP+cJn6UZyW5e/8PlwWCFi+ZbVouGBJY1HSzRFWzmz6ycO4o8KSSPRCK3QDO3QEC3lrE5MSp/SzqyX2PtjLwAAAABJRU5ErkJggg==") no-repeat 0 0}.ks-ie7 
+.search-wrap{top:13px;background:url(http://gtms03.alicdn.com/tps/i3/T14kyzFDBXXXcSgITo-230-30.png) no-repeat 0 0}
+.search-wrap .search-content{padding-left:30px;position:relative}
+.search-wrap .search-content #J_searchStatus{border:0 none;cursor:pointer;background-color:red;width:30px;height:30px;display:block;overflow:hidden;position:absolute;font-size:0;left:0;top:0;text-indent:150%;outline:0;background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEcSURBVDhPpZNNTgJREIQncanulCvINTgD7jyKOySchABbhnsYxIsAsgBCZvhqKHgQ3tMMfkmFprq6Mz9vsnPKsnwqiqKHZmhtTVFHPcd+h3Cb8BxFob9QxvE4CqDCAzlqUT5IqtHEPRFfRuMZLRx8t32Fes7oyhq2A5i6fwUmtpKQyZ3t2QpgTt1s2UqijLMzWwHMtZuPtpIo4+zGVqDOImJ6Acr+2Apg3nJrX7YCmMeHndtKooyz0YfdQP9//YLG+YEcIx3Ce0t1dSWCeuixOARe0dL5K9RDI9dd9EJ55/FLaBw/2m+0RSv0iT7UU4a662UbNEgu+wsGmyyojoy4eZmGGB5WWwz/+27Xg9nTMn536M2t+nhZ/7Aky/Y0HADxN+jy+QAAAABJRU5ErkJggg==") no-repeat 10px 50%}.ks-ie7 
+.search-wrap .search-content #J_searchStatus{background:url(http://gtms02.alicdn.com/tps/i2/T1u55zFpXaXXX9g2ba-18-18.png) no-repeat 10px 50%}
+.search-wrap .search-content #J_searchStatus.loading{background:url(http://gtms01.alicdn.com/tps/i1/T1OT08Fv8aXXXYdLba-18-18.gif) no-repeat 10px 50%}
+.search-wrap .search-input{width:200px}
+.search-wrap .search-input input{border:0 none;background-color:transparent;height:24px;width:180px;padding:3px;outline:0;color:#fff;font-family:"Hiragino Sans GB","Microsoft Yahei",SimHei,SimSun}
+
+.old-wrap{
+	position:absolute;left:940px;width:230px;height:30px;top:13px;
+}
