@@ -402,8 +402,9 @@ func vcount(ctn *macaron.Context) {
 			if !logu.CheckErr(err) {
 				avatar := search.ISearchSValue(iu, "avatar_hd", []string{}...)
 				gender := search.ISearchSValue(iu, "gender", []string{}...)
-				name := search.ISearchSValue(iu, "nickname", []string{}...)
-				vvcount := db.NewVViCount(vc.UID, vc.VCount, vc.Status, avatar, name)
+				name := search.ISearchSValue(iu, "name", []string{}...)
+				nickname := search.ISearchSValue(iu, "nickname", []string{}...)
+				vvcount := db.NewVViCount(vc.UID, vc.VCount, vc.Status, avatar, name, nickname)
 				if strings.EqualFold(gender, "0") {
 					if len(fvvcounts) >= 10 {
 						continue
@@ -428,6 +429,7 @@ func vcount(ctn *macaron.Context) {
 }
 
 func dropvcount(ctx *macaron.Context) string {
+	or = true
 	err := vcountC.C.DropCollection()
 	ctx.Redirect("/vcount")
 	if logu.CheckErr(err) {

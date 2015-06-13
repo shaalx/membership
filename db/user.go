@@ -21,20 +21,22 @@ type ViCount struct {
 }
 
 type VViCount struct {
-	UID    string `bson:"uid"`
-	VCount int64  `bson:"vcount"`
-	Status string `bson:"status"`
-	Avatar string `bson:"avatar"`
-	Name   string
+	UID      string `bson:"uid"`
+	VCount   int64  `bson:"vcount"`
+	Status   string `bson:"status"`
+	Avatar   string `bson:"avatar"`
+	Name     string `bson:"name"`
+	NickName string `bson:"nickname"`
 }
 
-func NewVViCount(uid string, vcount int64, status, avatar, name string) *VViCount {
+func NewVViCount(uid string, vcount int64, status, avatar, name, nickname string) *VViCount {
 	return &VViCount{
-		UID:    uid,
-		VCount: vcount,
-		Status: status,
-		Avatar: avatar,
-		Name:   name,
+		UID:      uid,
+		VCount:   vcount,
+		Status:   status,
+		Avatar:   avatar,
+		Name:     name,
+		NickName: nickname,
 	}
 }
 
