@@ -39,7 +39,7 @@
                 // type:"GET",
                 url:"/all_count",
                 success :function (data) {
-                        $("#all_count").html("<h4>在线人数:  "+data+"</h4>");
+                        $("#all_count").html("<h4>注册人数:  "+data+"</h4>");
                 }
         })
   }
@@ -67,7 +67,7 @@
         
         <div class="span12" style="background-color:#4d5152">        
             <div class="span2 offset1"><a href="/"><h4>首页</h4></a></div>
-            <div class="span2"><a href="/statistics"><h4 id="all_count">在线人数:  {{.all_count}}</h4></a></div>
+            <div class="span2"><a href="/statistics"><h4 id="all_count">注册人数:  {{.all_count}}</h4></a></div>
               <!-- <div class="span2">
                     <button style="background-color:#4d5152;border:0" id="update-btn" onclick="switchUpdate();"><h4><font color="#fff">
                           {{if .update}}

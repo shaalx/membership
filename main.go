@@ -103,7 +103,7 @@ func index(ctx *macaron.Context) {
 	}
 	page -= 1
 	pageSize := 10
-	count := len(db.DistinctUids(onlineC)) //all_countInt()
+	count := all_countInt()
 	start := page * pageSize
 	if page*pageSize >= count {
 		page = count / pageSize
@@ -315,16 +315,17 @@ func statistics(ctx *macaron.Context) {
 	ctx.Data["status1"] = status1
 	ctx.Data["status2"] = status2
 
-	ctx.Data["all_count"] = len(duids)
+	all_count_ := all_countInt()
+	status_len := len(duids)
+	missed := all_count_ - status_len
+
+	ctx.Data["status_len"] = status_len
+	ctx.Data["missed_len"] = missed
 	ctx.Data["status0_len"] = len(status0)
 	ctx.Data["status1_len"] = len(status1)
 	ctx.Data["status2_len"] = len(status2_)
 
-	// ctx.Data["all_count"] = len(duids)
-	// ctx.Data["status0_len"] = len(duids)
-	// ctx.Data["status1_len"] = len(duids)
-	// ctx.Data["status2_len"] = len(duids)
-
+	ctx.Data["all_count"] = all_count_
 	ctx.Data["fetch"] = or
 	ctx.Data["update"] = update
 
@@ -458,7 +459,7 @@ func vcount(ctn *macaron.Context) {
 		ctn.Data["fvvcounts"] = fvvcounts
 		ctn.Data["mvvcounts"] = mvvcounts
 
-		ctn.Data["all_count"] = len(db.DistinctUids(onlineC))
+		ctn.Data["all_count"] = all_count()
 		ctn.Data["fetch"] = or
 		ctn.Data["update"] = update
 		ctn.HTML(200, "vcount")
@@ -540,7 +541,7 @@ func searchName(ctx *macaron.Context) {
 		ctx.Data["users"] = users
 	}
 
-	ctx.Data["all_count"] = len(db.DistinctUids(onlineC))
+	ctx.Data["all_count"] = all_count()
 	ctx.Data["fetch"] = or
 	ctx.Data["update"] = update
 	ctx.HTML(200, "search")

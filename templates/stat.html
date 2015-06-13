@@ -52,19 +52,24 @@
 	<div class="container" style="background-color:#fff;text-align:center;">
 		<div class="hero-unit">
 			<div class="row">
-				<div class="span2 offset1" style="color:#6f8">
+				<div class="span2" style="color:#3a5">
 					<label>
 						<h3>在线</h3>					
 					</label>
 				</div>
-				<div class="span2 offset0.5" style="color:#ccc">
+				<div class="span2" style="color:#bbb">
 					<label>
 						<h3>隐身</h3>						
 					</label>
 				</div>
-				<div class="span2  offse0t.5" style="color:#555">
+				<div class="span2" style="color:#555">
 					<label>
 						<h3>离线</h3>					
+					</label>
+				</div>
+				<div class="span2" style="color:#655">
+					<label>
+						<h3>未检测</h3>					
 					</label>
 				</div>
 				<div class="span2" style="color:#768">
@@ -75,14 +80,17 @@
 			</div>
 
 			<div class="row">
-				<div id="status1_len" class="span2 offset1" style="color:#6f8">
+				<div id="status1_len" class="span2" style="color:#3a5">
 					<h3>{{.status1_len}}</h3>
 				</div>
-				<div id="status0_len" class="span2 offset0.5" style="color:#ccc">
+				<div id="status0_len" class="span2" style="color:#bbb">
 					<h3>{{.status0_len}}</h3>
 				</div>
-				<div id="status2_len" class="span2 offset0.5" style="color:#555">
+				<div id="status2_len" class="span2" style="color:#555">
 					<h3>{{.status2_len}}</h3>
+				</div>
+				<div id="status2_len" class="span2" style="color:#555">
+					<h3>{{.missed_len}}</h3>
 				</div>
 				<div id="all_count" class="span2" style="color:#768">
 					<h3>{{.all_count}}</h3>
@@ -90,7 +98,7 @@
 			</div>
 			<hr>
 			<div class="row">
-				<div class="span2 offset1" style="color:#6f8;text-align:left">
+				<div class="span2 offset1" style="color:#3a5;text-align:left">
 					<label>
 						<h3>在线</h3>					
 					</label>
@@ -112,7 +120,7 @@
 			</div>
 			<hr>
 			<div class="row">
-				<div class="span2 offset1" style="color:#ccc;text-align:left">
+				<div class="span2 offset1" style="color:#bbb;text-align:left">
 					<label>
 						<h3>隐身</h3>						
 					</label>
@@ -121,7 +129,7 @@
 			<div class="row">
 				{{range $k,$v:= .status0}}
 						<div class="span3">
-							<a onclick="favatar({{$k}},{{.id}})">
+							<a onclick="mavatar({{$k}},{{.id}})">
 								<label style="color:#ccc"><h4>
 									{{$v.nickname}}({{$v.name}})
 								</h4></label>
