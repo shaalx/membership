@@ -500,7 +500,7 @@ func searchName(ctx *macaron.Context) {
 		start = 0
 	}
 	searchPage += 1
-
+	// fmt.Println(count, searchPage, count/pageSize)
 	var users []interface{}
 	err = usersC.C.Find(query).Skip(start).Limit(pageSize).All(&users)
 	if !logu.CheckErr(err) {
@@ -508,7 +508,7 @@ func searchName(ctx *macaron.Context) {
 	}
 
 	ctx.Data["searchName"] = searchNameStr
-	ctx.Data["searchPage"] = page + 1
+	ctx.Data["searchPage"] = searchPage + 1
 	ctx.Data["all_count"] = all_count()
 	ctx.Data["fetch"] = or
 	ctx.Data["update"] = update
@@ -559,6 +559,7 @@ func searchName2(ctx *macaron.Context) {
 	}
 	searchPage += 1
 
+	// fmt.Println("search2 :", count, searchPage, count/pageSize, start)
 	var users []interface{}
 	err = usersC.C.Find(query).Skip(start).Limit(pageSize).All(&users)
 	if !logu.CheckErr(err) {
@@ -566,7 +567,7 @@ func searchName2(ctx *macaron.Context) {
 	}
 
 	ctx.Data["searchName"] = searchNameStr
-	ctx.Data["searchPage"] = page + 1
+	ctx.Data["searchPage"] = searchPage + 1
 	ctx.Data["all_count"] = all_count()
 	ctx.Data["fetch"] = or
 	ctx.Data["update"] = update
