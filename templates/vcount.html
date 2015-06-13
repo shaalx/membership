@@ -50,7 +50,7 @@
 			</div>
 			<hr>
 			<div class="row" style="text-align:left;">
-				<div class="span3 offset1">
+				<div class="span3 offset1" style="color:#8a9">
 				<label>
 					<h3>女生 Top 10</h3>
 				</label>
@@ -68,7 +68,7 @@
 			</div>			
 			<hr>	<br>
 			<div class="row" style="text-align:left;">
-				<div class="span3 offset1">
+				<div class="span3 offset1" style="color:#8a9">
 				<label>
 					<h3>男生 Top 10</h3>
 				</label>
@@ -76,7 +76,7 @@
 			</div>
 			<div class="row">
 				{{range $k,$v:= .mvvcounts}}
-						<div class="span2">
+						<div class="span1">
 							<a onclick="avatar({{$k}},{{$v.UID}});"><h5>{{$v.Name}}</h5></a>
 							<a href="http://online.daoapp.io/detail/{{$v.UID}}" target="_blank">
 							<div id="avatar{{$k}}"><img class="img-circle" height="150" width="150"  src="{{$v.Avatar}}"></div>
