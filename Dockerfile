@@ -8,6 +8,6 @@ ADD . /gopath/app/
 
 RUN go get github.com/shaalx/membership
 RUN go install github.com/shaalx/membership
-RUN ls
+
 EXPOSE 80
 CMD ["/gopath/app/bin/membership"]
