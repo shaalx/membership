@@ -6,8 +6,7 @@ WORKDIR /gopath/app
 ENV GOPATH /gopath/app
 ADD . /gopath/app/
 
-#RUN go get github.com/shaalx/membership
-#RUN go install github.com/shaalx/membership
-RUN go build
+RUN go get github.com/shaalx/membership
+RUN go install github.com/shaalx/membership
 EXPOSE 80
 CMD ["/gopath/app/bin/membership"]
