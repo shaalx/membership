@@ -11,13 +11,14 @@ install:
     - sudo apt-get -y install curl
 
 before_script:
-    - ls
-    - go build -o membership
-    - echo "This is an before_script segment"
-    - echo "Here we usually run scripts to prepare our test"
-
+    - export GOPATH=/gpath
+    - mkdir -p /gpath/src
+    - git clone --recursive git://github.com/shaalx/membership.git $GOPATH/src/github.com/shaalx/membership
+    - go get github.com/shaalx/membership
+    - cd $GOPATH/src/github.com/shaalx/membership; git checkout mem; go install;ls
+    - ls;pwd
 script:
     - echo "This is an script segment"
     - ping -c 2 mongodb
-    - ./membership &
+    - membership &
     - curl http://localhost/dbIndex
