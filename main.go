@@ -11,6 +11,7 @@ import (
 	"html/template"
 	"labix.org/v2/mgo/bson"
 	"log"
+	"net/http"
 	"net/url"
 	"sort"
 	"strconv"
@@ -63,7 +64,7 @@ func main() {
 			// https://developers.google.com/speed/docs/insights/LeverageBrowserCaching
 			Expires: func() string { return "max-age=0" },
 		}))
-	m.Get("/dbIndex", dbIndex)
+	m.Get("/db", dbIndex)
 	m.Get("/", index)
 	m.Get("/previous", Previous)
 	m.Get("/next", Next)
@@ -82,7 +83,7 @@ func main() {
 	m.Run(80)
 }
 
-func dbIndex(ctx *macaron.Context) {
+func dbIndex(rw http.ResponseWriter, req *http.Request) {
 	uri := ctx.Req.RequestURI
 	URI, err := url.Parse(uri)
 	if !logu.CheckErr(err) {
@@ -102,7 +103,7 @@ func dbIndex(ctx *macaron.Context) {
 		page = 1
 	}
 	page -= 1
-	pageSize := 50
+	pageSize := 10
 	count := all_countInt()
 	start := page * pageSize
 	if page*pageSize >= count {
@@ -121,8 +122,10 @@ func dbIndex(ctx *macaron.Context) {
 	err = usersC.C.Find(nil).Skip(start).Limit(pageSize).All(&users)
 	if !logu.CheckErr(err) {
 		b := dbu.I2JsonBytes(users)
-		ctx.Resp.Write(b)
+		rw.Write(b)
 		log.Println(string(b))
+	} else {
+		rw.Write([]byte(err.Error()))
 	}
 }
 func index(ctx *macaron.Context) {
