@@ -65,6 +65,7 @@ func main() {
 			// https://developers.google.com/speed/docs/insights/LeverageBrowserCaching
 			Expires: func() string { return "max-age=0" },
 		}))
+	m.Get("/dbIndex", dbIndex)
 	m.Get("/", index)
 	m.Get("/previous", Previous)
 	m.Get("/next", Next)
@@ -83,6 +84,47 @@ func main() {
 	m.Run(80)
 }
 
+func dbIndex(ctx *macaron.Context) {
+	uri := ctx.Req.RequestURI
+	URI, err := url.Parse(uri)
+	if !logu.CheckErr(err) {
+		pageStr := URI.Query().Get("page")
+		if len(pageStr) <= 0 {
+			page = 1
+		} else {
+			page64, err := strconv.ParseInt(pageStr, 10, 0)
+			if logu.CheckErr(err) {
+				page = 1
+			} else {
+				page = int(page64)
+			}
+		}
+	}
+	if page <= 0 {
+		page = 1
+	}
+	page -= 1
+	pageSize := 50
+	count := all_countInt()
+	start := page * pageSize
+	if page*pageSize >= count {
+		page = count / pageSize
+		if pageSize <= count {
+			start = 0
+		} else {
+			start = (page - 1) * pageSize
+		}
+	}
+	if start < 0 {
+		start = 0
+	}
+	page += 1
+	var users []interface{}
+	err = usersC.C.Find(nil).Skip(start).Limit(pageSize).All(&users)
+	if !logu.CheckErr(err) {
+		ctx.Data["u"] = users
+	}
+}
 func index(ctx *macaron.Context) {
 	// var users []interface{}
 	// err := usersC.C.Find(nil).Limit(10).All(&users)
