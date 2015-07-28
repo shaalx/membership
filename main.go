@@ -40,16 +40,16 @@ func main() {
 	m.Use(macaron.Renderer(macaron.RenderOptions{
 		Funcs: []template.FuncMap{
 			{
-				"Degree": func(degree int) string {
+				"Degree": func(degree string) string {
 					switch degree {
-					case 0:
+					case "0":
 						return "本科"
-					case 1:
+					case "1":
 						return "硕士"
-					case 2:
+					case "2":
 						return "博士"
 					}
-					return fmt.Sprintf("Unknown degree: %d", degree)
+					return fmt.Sprintf("Unknown degree: %s", degree)
 				},
 			},
 		}}))
