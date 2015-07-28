@@ -20,15 +20,13 @@ import (
 )
 
 var (
-	// MgoDB = dbu.NewMgoDB("daocloud")
 	MgoDB   = dbu.NewMgoDB(dbu.Conn())
 	usersC  = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "users"}...)
 	onlineC = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "online"}...)
 	vcountC = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "vcount"}...)
-	// usersC = dbu.RawMgoDB()
-	or     = false
-	update = true
-	page   int
+	or      = false
+	update  = true
+	page    int
 )
 
 func init() {
@@ -182,7 +180,6 @@ func index(ctx *macaron.Context) {
 		ctx.Data["update"] = update
 		ctx.Data["all_count"] = fmt.Sprintf("%v", count)
 		ctx.Data["online_count"] = online_count()
-		// ctx.Data["Previous"] = template.HTML(fmt.Sprintf(`<a href="/?page=%d><h1><<<</h1></a>">`, page-1))
 		ctx.Data["Previous"] = template.HTMLEscapeString("<h1>Previous</h1>")
 		ctx.Data["Next"] = template.HTML(fmt.Sprintf(`<a href="/?page=%d><h1>>>></h1></a>">`, page+1))
 		ctx.HTML(200, "index")
