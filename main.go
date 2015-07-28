@@ -84,7 +84,7 @@ func main() {
 }
 
 func dbIndex(rw http.ResponseWriter, req *http.Request) {
-	uri := ctx.Req.RequestURI
+	uri := req.RequestURI
 	URI, err := url.Parse(uri)
 	if !logu.CheckErr(err) {
 		pageStr := URI.Query().Get("page")
