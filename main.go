@@ -49,6 +49,7 @@ func main() {
 					case 2:
 						return "博士"
 					}
+					return fmt.Sprintf("Unknown degree: %d", degree)
 				},
 			},
 		}}))
