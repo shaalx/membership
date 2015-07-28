@@ -120,7 +120,9 @@ func dbIndex(ctx *macaron.Context) {
 	var users []interface{}
 	err = usersC.C.Find(nil).Skip(start).Limit(pageSize).All(&users)
 	if !logu.CheckErr(err) {
-		ctx.Data["u"] = users
+		b := dbu.I2JsonBytes(users)
+		ctx.Resp.Write(b)
+		log.Println(string(b))
 	}
 }
 func index(ctx *macaron.Context) {
