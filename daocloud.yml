@@ -19,11 +19,12 @@ before_script:
     # - git clone https://github.com/shaalx/membership $GOPATH/src/github.com/shaalx/membership
     - go get -u github.com/shaalx/membership
     # - cd $GOPATH/src/github.com/shaalx/membership; git checkout mem;ls ; go install
-    - cd $GOPATH/src/github.com/shaalx/membership;ls ; go build -o membership;sudo chmod +x membership ;membership & ; mv membership $GOPATH/bin/membership
+    - cd $GOPATH/src/github.com/shaalx/membership;ls ; go build -o membership;sudo chmod +x membership ;mv membership $GOPATH/bin/membership
     - ls;pwd
 script:
     - echo "This is an script segment"
     - ping -c 2 mongodb
-    # - $GOPATH/bin/membership &
+    - $GOPATH/bin/membership &
     - sleep 4
+    - curl http://localhost/
     - curl http://localhost/dbIndex
