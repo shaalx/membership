@@ -11,6 +11,7 @@ install:
     - sudo apt-get -y install curl
 
 before_script:
+    - ls
     - go build -o membership
     - echo "This is an before_script segment"
     - echo "Here we usually run scripts to prepare our test"
