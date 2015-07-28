@@ -37,7 +37,21 @@ func init() {
 func main() {
 	go v4()
 	m := macaron.Classic()
-	m.Use(macaron.Renderer())
+	m.Use(macaron.Renderer(macaron.RenderOptions{
+		Funcs: []template.FuncMap{
+			{
+				"Degree": func(degree int) string {
+					switch degree {
+					case 0:
+						return "本科"
+					case 1:
+						return "硕士"
+					case 2:
+						return "博士"
+					}
+				},
+			},
+		}}))
 	m.Use(macaron.Static("public",
 		macaron.StaticOptions{
 			// 请求静态资源时的 URL 前缀，默认没有前缀
