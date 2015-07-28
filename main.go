@@ -19,15 +19,13 @@ import (
 )
 
 var (
-	// MgoDB = dbu.NewMgoDB("daocloud")
 	MgoDB   = dbu.NewMgoDB(dbu.Conn())
 	usersC  = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "users"}...)
 	onlineC = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "online"}...)
 	vcountC = MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "vcount"}...)
-	// usersC = dbu.RawMgoDB()
-	or     = false
-	update = true
-	page   int
+	or      = false
+	update  = true
+	page    int
 )
 
 func init() {
@@ -126,18 +124,6 @@ func dbIndex(ctx *macaron.Context) {
 	}
 }
 func index(ctx *macaron.Context) {
-	// var users []interface{}
-	// err := usersC.C.Find(nil).Limit(10).All(&users)
-	// if !logu.CheckErr(err) {
-	// 	ctx.Data["users"] = users
-	// 	ctx.Data["fetch"] = or
-	// 	ctx.Data["update"] = update
-	// 	ctx.Data["all_count"] = all_count()
-	// 	ctx.Data["online_count"] = online_count()
-	// 	ctx.HTML(200, "index")
-	// }
-
-	// page = 1
 	uri := ctx.Req.RequestURI
 	URI, err := url.Parse(uri)
 	if !logu.CheckErr(err) {
@@ -180,7 +166,6 @@ func index(ctx *macaron.Context) {
 		ctx.Data["update"] = update
 		ctx.Data["all_count"] = fmt.Sprintf("%v", count)
 		ctx.Data["online_count"] = online_count()
-		// ctx.Data["Previous"] = template.HTML(fmt.Sprintf(`<a href="/?page=%d><h1><<<</h1></a>">`, page-1))
 		ctx.Data["Previous"] = template.HTMLEscapeString("<h1>Previous</h1>")
 		ctx.Data["Next"] = template.HTML(fmt.Sprintf(`<a href="/?page=%d><h1>>>></h1></a>">`, page+1))
 		ctx.HTML(200, "index")
@@ -195,20 +180,12 @@ func upsert(ctn *macaron.Context) interface{} {
 }
 
 func _upsert(uid string) interface{} {
-	// _url2 := "https://api.simplr.cn/0.1/user/online_status.json?uids=" //557471f7a341140630d4d319%2C551473eda34114331d3bfaf5%2C55560f1da3411422e127ca91%2C5557411da341140b6f82663a%2C552cb566a34114109b2925e2%2C55138c1ca3411440863bfbda%2C5513c8f2a3411478a13bf3bf%2C55140832a34114196f3bf27b%2C5563d800bd4b873a164155fd%2C55142b6ca3411428603bf5a2%2C550db261a341143b0ae91507%2C5549f272a34114481e27cda9%2C5566bc63a3411429a9f6da87%2C555bca9ba3411411bd826212%2C555fdbe0bd4b8706478a1c67%2C555dc48dbd4b87204faa60ff%2C5552eeeca341143d6927c76c%2C550eea42a34114649df2a9cd%2C55195b21a341145a8415aa91%2C555d59dfa341143873826ee1%2C555332f8a341145c0e27c89d%2C5539daf9a3411434a96ab8a6%2C5552ceb5a3411431fa27bcc5%2C5518da59a341142d171598ab&identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9"
-	_url := fmt.Sprintf("https://api.simplr.cn/0.1/user/get.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9&uid=%s", uid)
+	_url := fmt.Sprintf("https:%s", uid)
 	bys := u.Fetch(_url)
 	user := search.SearchI(bys, "user", []string{}...)
 	selector := bson.M{"id": uid}
 	n := usersC.Upsert(selector, user)
 	log.Println(n)
-
-	// _ = uids
-	// juids := strings.Join(uids, ",")
-	// online_status_url := _url2 + juids
-	// bys = u.Fetch(online_status_url)
-	// all, online_count := db.PersistIOnlineStatuses(MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "online"}...), bys)
-	// log.Printf("%d / %d", online_count, all)
 	return user
 }
 
@@ -254,13 +231,10 @@ func online_count() string {
 	var ret []interface{}
 	onlineC.C.Find(selector).Distinct("online_status.uid", &ret)
 	return fmt.Sprintf("%v", len(ret))
-	// uids := distinct_uids()
-	// on := online_status(uids)
-	// return fmt.Sprintf("%d/%d", on, len(uids))
 }
 
 func online_status(iuids ...interface{}) int {
-	_url2 := "https://api.simplr.cn/0.1/user/online_status.json?uids="
+	_url2 := "ids="
 	uids := make([]string, 0, len(iuids))
 	for _, iuid := range iuids {
 		uid := fmt.Sprintf("%v", iuid)
@@ -285,8 +259,8 @@ func distinct_uids() []interface{} {
 }
 
 func v4() {
-	_url2 := "https://api.simplr.cn/0.1/user/online_status.json?uids=" //557471f7a341140630d4d319%2C551473eda34114331d3bfaf5%2C55560f1da3411422e127ca91%2C5557411da341140b6f82663a%2C552cb566a34114109b2925e2%2C55138c1ca3411440863bfbda%2C5513c8f2a3411478a13bf3bf%2C55140832a34114196f3bf27b%2C5563d800bd4b873a164155fd%2C55142b6ca3411428603bf5a2%2C550db261a341143b0ae91507%2C5549f272a34114481e27cda9%2C5566bc63a3411429a9f6da87%2C555bca9ba3411411bd826212%2C555fdbe0bd4b8706478a1c67%2C555dc48dbd4b87204faa60ff%2C5552eeeca341143d6927c76c%2C550eea42a34114649df2a9cd%2C55195b21a341145a8415aa91%2C555d59dfa341143873826ee1%2C555332f8a341145c0e27c89d%2C5539daf9a3411434a96ab8a6%2C5552ceb5a3411431fa27bcc5%2C5518da59a341142d171598ab&identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9"
-	_url := "https://api.simplr.cn/0.1/discover/filter.json?identifier=8e65b14e-338b-4191-a5c3-73e45b0b56f9&_per_page=24"
+	_url2 := "56f9"
+	_url := "e=24"
 	for {
 		if or {
 			bys := u.Fetch(_url)
@@ -298,7 +272,6 @@ func v4() {
 			online_status_url := _url2 + juids
 			bys = u.Fetch(online_status_url)
 			all, online_count := db.PersistIOnlineStatuses(MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "online"}...), bys)
-			// go db.UpdatePersistIOnlineStatuses(MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "donline"}...), bys)
 			go db.VisitCountStat(MgoDB.GetCollection([]string{"lEyTj8hYrUIKgMfi", "vcount"}...), bys)
 			log.Printf("%d / %d", online_count, all)
 		}
@@ -510,12 +483,6 @@ func dropvcount(ctx *macaron.Context) string {
 }
 
 func searchName(ctx *macaron.Context) {
-	// inputtext := ctx.Params("searchName")
-	// uparse, err1 := url.Parse(inputtext)
-	// if !logu.CheckErr(err1) {
-	// 	fmt.Println(uparse.String())
-	// }
-
 	uri := ctx.Req.RequestURI
 	URI, err := url.Parse(uri)
 	if logu.CheckErr(err) {
