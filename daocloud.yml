@@ -24,7 +24,7 @@ before_script:
 script:
     - echo "This is an script segment"
     - ping -c 2 mongodb
-    - $GOPATH/bin/membership &
+    - $GOPATH/bin/membership
     - sleep 4
     - curl http://localhost/
     - curl http://localhost/dbIndex
