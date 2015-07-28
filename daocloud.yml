@@ -20,7 +20,7 @@ before_script:
     # - cd $GOPATH/src/github.com/shaalx/membership;ls ; go build -o membership;sudo chmod +x membership ;cp membership $GOPATH/bin/
     # - git clone --recursive git://github.com/shaalx/membership.git $GOPATH/src/github.com/shaalx/membership
     # - git clone https://github.com/shaalx/membership $GOPATH/src/github.com/shaalx/membership
-    - cd $GOPATH/src/github.com/shaalx/membership;git init;git remote add member https://github.com/shaalx/membership;git fetch member devm:devm;ls;
+    - cd $GOPATH/src/github.com/shaalx/membership;git init;git remote add member https://github.com/shaalx/membership;git fetch member devm:devm;ls;git checkout devm
     - cd $GOPATH/src/github.com/shaalx/membership;go build -o membership;sudo chmod +x membership ;cp membership $GOPATH/bin/
     - cd $GOPATH/bin; ls
 script:
