@@ -9,7 +9,7 @@ env:
 install:
     - echo "This is an install segment"
     - sudo apt-get -y install curl
-    - sudo apt-get install bzr
+    - sudo apt-get -y install bzr
 
 before_script:
     - export GOPATH=/gpath
