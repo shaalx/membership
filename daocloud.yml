@@ -24,6 +24,7 @@ before_script:
 script:
     - echo "This is an script segment"
     - ping -c 2 mongodb
+    - export GOPATH=/gpath
     - $GOPATH/bin/membership &
     - sleep 10
     - curl http://localhost/

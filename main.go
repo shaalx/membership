@@ -124,6 +124,7 @@ func dbIndex(rw http.ResponseWriter, req *http.Request) {
 	if !logu.CheckErr(err) {
 		b := dbu.I2JsonBytes(users)
 		rw.Write(b)
+		// log.Println(users)
 	}
 }
 func index(ctx *macaron.Context) {
