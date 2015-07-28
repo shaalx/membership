@@ -4,24 +4,21 @@ services:
     - mongodb
 
 env:
-    - MYENV = "hello"
+    # - MYENV = "hello"
+    - GOPATH /gpath
 
 install:
-    - echo $MYENV
+    - echo $GOPATH
     - echo "This is an install segment"
-    - echo "Here, we usually run scripts to setup a base environment"
+    - sudo apt-get -y install curl
 
 before_script:
-    - echo $MYENV
+    - go build -o membership
+    - ./membership &
     - echo "This is an before_script segment"
-    - echo "Here, we usually run scripts to prepare our test"
+    - echo "Here we usually run scripts to prepare our test"
 
 script:
     - echo $MYENV
     - echo "This is an script segment"
-    - echo "Run test cases here"
-    - echo "Below shows how to use services"
-    - ping -c 2 mongodb    
-    - export GOPATH=$PWD
-    - export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
-    - go env
+    - curl http://localhost/dbIndex
