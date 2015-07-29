@@ -50,41 +50,19 @@ type DOnlineStatus struct {
 }
 
 func Now() string {
-	_now := time.Now()
-	return _now.String()
-	// loc, err := time.LoadLocation("Europe/Paris")
-	// if logu.CheckErr(err) {
-	// 	return _now.String()
-	// }
-	// st := "2006-01-02 08:00"
-	// time3, _ := time.Parse("2006-01-02 15:04", st)
-	// fmt.Println("time3 is :", time3)
-	// nowf := time.Now().Format(st)
-	// nowp, err := time.ParseInLocation(nowf, st, loc)
-	// if logu.CheckErr(err) {
-	// 	return _now.String()
-	// }
-	// fmt.Printf("parse time is %v", nowp)
-	// return nowp.String()
+	loc, err := time.LoadLocation("Asia/Shanghai")
+	if logu.CheckErr(err) {
+		return ""
+	}
+	return time.Unix(time.Now().Unix(), 0).In(loc).String()
 }
 
 func NowUnix() int64 {
-	_now := time.Now()
-	return _now.Unix()
-	// loc, err := time.LoadLocation("Europe/Paris")
-	// if logu.CheckErr(err) {
-	// 	return _now.String()
-	// }
-	// st := "2006-01-02 08:00"
-	// time3, _ := time.Parse("2006-01-02 15:04", st)
-	// fmt.Println("time3 is :", time3)
-	// nowf := time.Now().Format(st)
-	// nowp, err := time.ParseInLocation(nowf, st, loc)
-	// if logu.CheckErr(err) {
-	// 	return _now.String()
-	// }
-	// fmt.Printf("parse time is %v", nowp)
-	// return nowp.String()
+	loc, err := time.LoadLocation("Asia/Shanghai")
+	if logu.CheckErr(err) {
+		return ""
+	}
+	return time.Unix(time.Now().Unix(), 0).In(loc).Unix()
 }
 
 func SearchIUsers(data []byte) []interface{} {
