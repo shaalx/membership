@@ -60,7 +60,7 @@ func Now() string {
 func NowUnix() int64 {
 	loc, err := time.LoadLocation("Asia/Shanghai")
 	if logu.CheckErr(err) {
-		return ""
+		return 0
 	}
 	return time.Unix(time.Now().Unix(), 0).In(loc).Unix()
 }
