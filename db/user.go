@@ -124,7 +124,7 @@ func DistinctUids(onlineC *dbu.Collection) []string {
 }
 
 func OnlineUids(iuids ...string) ([]interface{}, []interface{}, []interface{}) {
-	_url2 := "https://api.simplr.cn/0.1/user/online_status.json?uids="
+	_url2 := "https://="
 	juids := strings.Join(iuids, ",")
 	url_ := _url2 + juids
 	bys := u.Fetch(url_)
