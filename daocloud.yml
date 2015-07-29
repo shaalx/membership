@@ -30,4 +30,4 @@ script:
     - $GOPATH/bin/membership &
     - sleep 10
     - curl http://localhost/
-    - curl http://localhost/db
+    # - curl http://localhost/db
