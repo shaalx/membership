@@ -29,7 +29,7 @@ func unmarshal(b []byte) []interface{} {
 }
 
 func main() {
-	http.HandleFunc("/", info)
+	http.HandleFunc("/", bookmark)
 	http.ListenAndServe(":80", nil)
 }
 
@@ -38,13 +38,20 @@ var (
 	v []interface{}
 )
 
+func get(_url string) []byte {
+	resp, _ := http.Get(_url)
+	b, _ := ioutil.ReadAll(resp.Body)
+	return b
+}
+
 func init() {
-	t, _ = template.New("info.html").ParseFiles("info.html")
-	b := readFile("user.md")
+	t, _ = template.New("bookmark.html").ParseFiles("bookmark.html")
+	// b := readFile("user.md")
+	b := get("http://7xku3c.com1.z0.glb.clouddn.com/bookmark.md")
 	v = unmarshal(b)
 }
 
-func info(rw http.ResponseWriter, req *http.Request) {
+func bookmark(rw http.ResponseWriter, req *http.Request) {
 	fmt.Printf("%s  ", req.RemoteAddr)
 	t.Execute(rw, v)
 }
