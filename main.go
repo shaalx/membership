@@ -65,10 +65,10 @@ func get(_url string) []byte {
 func init() {
 	update = make(chan bool, 10)
 	t, _ = template.New("bookmark.html").ParseFiles("bookmark.html")
-	// b := readFile("user.md")
+	// b := readFile("bookmark.md")
 	b := get("http://7xku3c.com1.z0.glb.clouddn.com/bookmark.md")
 	v = unmarshal(b)
-	cache = u.NewLFUCache(4)
+	cache = u.NewLFUCache(len(v))
 	for i := len(v) - 1; i >= 0; i-- {
 		cache.Set(v[i].Title, v[i])
 	}
