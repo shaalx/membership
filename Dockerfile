@@ -1,4 +1,4 @@
-FROM google/golang
+FROM golang
 
 # Build app
 WORKDIR /gopath/app
