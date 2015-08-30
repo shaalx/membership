@@ -18,6 +18,7 @@ type Bookmark struct {
 	Bgpic    string `json:"bgpic"`
 	Site     string `json:"site"`
 	Remark   string `json:"remark"`
+	N        int    `json:"n"`
 }
 
 var cache *u.LFUCache
@@ -43,6 +44,7 @@ func unmarshal(b []byte) []*Bookmark {
 
 func main() {
 	go updateBookmarks(time.Second)
+	go flushBookmarks(time.Hour * 24 * 30)
 	http.HandleFunc("/", bookmark)
 	http.HandleFunc("/lfu", lfu)
 	http.ListenAndServe(":80", nil)
@@ -70,24 +72,30 @@ func init() {
 	for i := len(v) - 1; i >= 0; i-- {
 		cache.Set(v[i].Title, v[i])
 	}
+	update <- true
 }
-
-func bookmarkInCache() []*Bookmark {
-	vals := cache.Vals()
-	ret := make([]*Bookmark, len(vals))
-	for i, it := range vals {
-		bok := it.V.(*Bookmark)
-		ret[i] = bok
+func flushBookmarks(d time.Duration) {
+	ticker := time.NewTicker(d)
+	for {
+		<-ticker.C
+		cache.Flush()
+		update <- true
 	}
-	return ret
 }
 
 func updateBookmarks(d time.Duration) {
 	ticker := time.NewTicker(d)
 	for {
-		<-ticker.C
-		v = bookmarkInCache()
 		<-update
+		<-ticker.C
+		vals := cache.Vals()
+		ret := make([]*Bookmark, len(vals))
+		for i, it := range vals {
+			bok := it.V.(*Bookmark)
+			bok.N = it.N
+			ret[i] = bok
+		}
+		v = ret
 	}
 }
 
