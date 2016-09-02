@@ -2,7 +2,7 @@ package dbu
 
 import (
 	"encoding/json"
-	"github.com/shaalx/membership/logu"
+	"github.com/toukii/membership/logu"
 	"labix.org/v2/mgo/bson"
 )
 
