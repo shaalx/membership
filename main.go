@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	. "github.com/everfore/oauth/oauth2"
-	"github.com/shaalx/leetcode/lfu2"
+	"github.com/toukii/leetcode/lfu2"
 	"html/template"
 	"io/ioutil"
 	"log"
