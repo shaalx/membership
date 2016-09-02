@@ -2,7 +2,7 @@ package dbu
 
 import (
 	"fmt"
-	"github.com/shaalx/membership/logu"
+	"github.com/toukii/membership/logu"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 	"os"
